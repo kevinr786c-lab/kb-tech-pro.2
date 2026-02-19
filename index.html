@@ -1,0 +1,105 @@
+import React, { useState } from 'react';
+import { Clock, Globe, DollarSign, AlertCircle, CheckCircle, MessageCircle } from 'lucide-react';
+
+const KB_Tech_Dashboard = () => {
+  // Simulación de datos del búnker (Supabase)
+  const [citas] = useState([
+    { id: 1, paciente: "John Smith", origen: "San Diego, CA", servicio: "Implante", status: "confirmada", pago: "pendiente", deuda: 1500, fidelidad: "VIP", color: "red" },
+    { id: 2, paciente: "Maria Garcia", origen: "Tijuana, BC", servicio: "Limpieza", status: "pendiente", pago: "pagado", deuda: 0, fidelidad: "Fiel", color: "blue" },
+    { id: 3, paciente: "Robert Fox", origen: "Chula Vista, CA", servicio: "Consulta", status: "confirmada", pago: "parcial", deuda: 200, fidelidad: "Nuevo", color: "green" },
+  ]);
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 font-sans">
+      {/* SECTOR NORTE: RADAR DE MÉTRICAS */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+        <MetricCard title="Citas Hoy" value="12" color="blue" icon={<Clock size={20}/>} />
+        <MetricCard title="Confirmadas" value="8" color="green" icon={<CheckCircle size={20}/>} />
+        <MetricCard title="Pendientes" value="3" color="yellow" icon={<AlertCircle size={20}/>} />
+        <MetricCard title="Ingreso Hoy" value="$4,200 USD" color="emerald" icon={<DollarSign size={20}/>} />
+        <MetricCard title="Deuda Total" value="$1,850 USD" color="red" icon={<AlertCircle size={20}/>} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* SECTOR OESTE: TIMELINE DE OPERACIONES */}
+        <div className="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+          <div className="bg-slate-800 p-4 border-b border-slate-700 flex justify-between items-center">
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <Globe className="text-blue-400" size={20}/> Agenda Binacional Sincronizada
+            </h2>
+            <span className="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-bold">
+              SENTRI: 45 min | Ready Lane: 120 min
+            </span>
+          </div>
+
+          <div className="p-4 space-y-4">
+            {citas.map(cita => (
+              <div key={cita.id} className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border-l-4 border-l-blue-500 hover:bg-slate-800 transition-all">
+                <div className="flex gap-4 items-center">
+                  <div className={`w-3 h-3 rounded-full bg-${cita.color}-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]`}></div>
+                  <div>
+                    <p className="font-bold text-slate-100 flex items-center gap-2">
+                      {cita.paciente} 
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full ${cita.fidelidad === 'VIP' ? 'bg-yellow-500/20 text-yellow-500' : 'bg-blue-500/20 text-blue-400'}`}>
+                        {cita.fidelidad}
+                      </span>
+                    </p>
+                    <p className="text-xs text-slate-400">{cita.servicio} • <span className="text-blue-400">{cita.origen}</span></p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6">
+                  {/* ALERTA DE PAGO */}
+                  <div className="text-right">
+                    <p className={`text-xs font-bold ${cita.deuda > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                      {cita.deuda > 0 ? `Debe: $${cita.deuda}` : 'Pagado'}
+                    </p>
+                    <p className="text-[10px] text-slate-500 uppercase tracking-tighter">Status Financiero</p>
+                  </div>
+                  
+                  {/* BOTÓN TÁCTICO WHATSAPP */}
+                  <button className="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all">
+                    <MessageCircle size={18}/>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* SECTOR ESTE: PANEL DE CONTROL RÁPIDO */}
+        <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5 shadow-2xl">
+          <h2 className="font-bold mb-4 text-slate-400 uppercase text-xs tracking-widest">Acciones de Comando</h2>
+          <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl mb-3 transition-all shadow-lg shadow-blue-900/20">
+            + Nueva Cita
+          </button>
+          <button className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl mb-6 border border-slate-700 transition-all">
+            Cerrar Caja del Día
+          </button>
+
+          <div className="space-y-4">
+             <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+               <p className="text-red-400 text-xs font-bold uppercase mb-1">Alerta de Frontera</p>
+               <p className="text-slate-300 text-[11px]">Tráfico pesado en San Ysidro. 3 pacientes de San Diego podrían retrasarse.</p>
+             </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// Componente de Tarjeta de Métrica
+const MetricCard = ({ title, value, color, icon }) => (
+  <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl">
+    <div className="flex justify-between items-center mb-1">
+      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{title}</span>
+      <div className={`text-${color}-500`}>{icon}</div>
+    </div>
+    <div className="text-xl font-bold text-slate-100">{value}</div>
+  </div>
+);
+
+export default KB_Tech_Dashboard;
