@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K.B SYSTEM | RESERVAR ✦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .glass-card { background: white; border-radius: 3rem; border: 1px solid rgba(197, 160, 89, 0.1); padding: 2.5rem; width: 100%; max-width: 450px; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.05); }
+        .input-kb { width: 100%; padding: 1rem; border-radius: 1.5rem; border: 1px solid #e2e8f0; font-weight: 600; font-size: 14px; outline: none; }
+        .btn-mando { background: #0f172a; color: white; width: 100%; padding: 1.2rem; border-radius: 1.5rem; font-weight: 900; text-transform: uppercase; }
+        .slot { border: 1px solid #f1f5f9; padding: 0.5rem; text-align: center; border-radius: 0.8rem; font-size: 12px; font-weight: 800; cursor: pointer; }
+        .slot.selected { background: #0f172a; color: white; }
+    </style>
+</head>
+<body>
+    <div class="glass-card text-center">
+        <h1 class="text-2xl font-black italic uppercase text-[#0f172a] mb-8">K.B <span class="text-[#c5a059]">RESERVA</span></h1>
+        <form id="bookingForm" class="space-y-4 text-left">
+            <input type="text" id="nombre" class="input-kb uppercase" placeholder="NOMBRE COMPLETO" required>
+            <div class="flex gap-2">
+                <select id="lada" class="input-kb w-24"><option value="52">+52</option><option value="1">+1</option></select>
+                <input type="tel" id="telefono" class="input-kb" placeholder="TELÉFONO" required>
+            </div>
+            <input type="email" id="email" class="input-kb" placeholder="CORREO" required>
+            <input type="date" id="fecha" class="input-kb" required>
+            <div id="slots" class="grid grid-cols-3 gap-2 py-4"></div>
+            <button type="submit" class="btn-mando">Confirmar Reserva 🚀</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+        const supabase = createClient('https://hymwekomndkxdxsxqhyq.supabase.co', 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_');
+        
+        const params = new URLSearchParams(window.location.search);
+        let horaSel = null;
+
+        document.getElementById('fecha').onchange = async (e) => {
+            const container = document.getElementById('slots');
+            container.innerHTML = "CARGANDO...";
+            const horas = ["09:00", "10:00", "11:00", "12:00", "16:00", "17:00"];
+            container.innerHTML = horas.map(h => `<div class="slot" onclick="selHora(this, '${h}')">${h}</div>`).join('');
+        };
+
+        window.selHora = (el, h) => {
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            horaSel = h;
+        };
+
+        document.getElementById('bookingForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const { data: p } = await supabase.from('pacientes').upsert({
+                clinica_id: params.get('clinId'),
+                nombre_completo: document.getElementById('nombre').value.toUpperCase(),
+                telefono: document.getElementById('lada').value + document.getElementById('telefono').value,
+                email: document.getElementById('email').value
+            }).select().single();
+
+            await supabase.from('citas_agenda').insert({
+                clinica_id: params.get('clinId'),
+                doctor_id: params.get('docId'),
+                paciente_id: p.id,
+                fecha: document.getElementById('fecha').value,
+                hora_inicio: horaSel,
+                duracion_minutos: 30
+            });
+            alert("RESERVA EXITOSA");
+        };
+    </script>
+</body>
+</html>
