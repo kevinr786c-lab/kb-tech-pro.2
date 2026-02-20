@@ -1,105 +1,227 @@
-import React, { useState } from 'react';
-import { Clock, Globe, DollarSign, AlertCircle, CheckCircle, MessageCircle } from 'lucide-react';
-
-const KB_Tech_Dashboard = () => {
-  // Simulación de datos del búnker (Supabase)
-  const [citas] = useState([
-    { id: 1, paciente: "John Smith", origen: "San Diego, CA", servicio: "Implante", status: "confirmada", pago: "pendiente", deuda: 1500, fidelidad: "VIP", color: "red" },
-    { id: 2, paciente: "Maria Garcia", origen: "Tijuana, BC", servicio: "Limpieza", status: "pendiente", pago: "pagado", deuda: 0, fidelidad: "Fiel", color: "blue" },
-    { id: 3, paciente: "Robert Fox", origen: "Chula Vista, CA", servicio: "Consulta", status: "confirmada", pago: "parcial", deuda: 200, fidelidad: "Nuevo", color: "green" },
-  ]);
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 font-sans">
-      {/* SECTOR NORTE: RADAR DE MÉTRICAS */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-        <MetricCard title="Citas Hoy" value="12" color="blue" icon={<Clock size={20}/>} />
-        <MetricCard title="Confirmadas" value="8" color="green" icon={<CheckCircle size={20}/>} />
-        <MetricCard title="Pendientes" value="3" color="yellow" icon={<AlertCircle size={20}/>} />
-        <MetricCard title="Ingreso Hoy" value="$4,200 USD" color="emerald" icon={<DollarSign size={20}/>} />
-        <MetricCard title="Deuda Total" value="$1,850 USD" color="red" icon={<AlertCircle size={20}/>} />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K.B SYSTEM | ACCESO TOTAL ✦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap');
         
-        {/* SECTOR OESTE: TIMELINE DE OPERACIONES */}
-        <div className="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
-          <div className="bg-slate-800 p-4 border-b border-slate-700 flex justify-between items-center">
-            <h2 className="font-bold text-lg flex items-center gap-2">
-              <Globe className="text-blue-400" size={20}/> Agenda Binacional Sincronizada
-            </h2>
-            <span className="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-bold">
-              SENTRI: 45 min | Ready Lane: 120 min
-            </span>
-          </div>
+        :root { 
+            --kb-gold: #c5a059; 
+            --kb-dark: #0f172a; 
+            --kb-bg: #f8fafc;
+        }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--kb-bg); 
+            color: var(--kb-dark); 
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-          <div className="p-4 space-y-4">
-            {citas.map(cita => (
-              <div key={cita.id} className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border-l-4 border-l-blue-500 hover:bg-slate-800 transition-all">
-                <div className="flex gap-4 items-center">
-                  <div className={`w-3 h-3 rounded-full bg-${cita.color}-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]`}></div>
-                  <div>
-                    <p className="font-bold text-slate-100 flex items-center gap-2">
-                      {cita.paciente} 
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full ${cita.fidelidad === 'VIP' ? 'bg-yellow-500/20 text-yellow-500' : 'bg-blue-500/20 text-blue-400'}`}>
-                        {cita.fidelidad}
-                      </span>
-                    </p>
-                    <p className="text-xs text-slate-400">{cita.servicio} • <span className="text-blue-400">{cita.origen}</span></p>
-                  </div>
-                </div>
+        /* Efecto de Vidrio Blanco */
+        .glass { 
+            background: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(30px); 
+            border: 1px solid rgba(197, 160, 89, 0.3); 
+            border-radius: 4rem; 
+            box-shadow: 0 40px 80px -20px rgba(15, 23, 42, 0.1);
+        }
 
-                <div className="flex items-center gap-6">
-                  {/* ALERTA DE PAGO */}
-                  <div className="text-right">
-                    <p className={`text-xs font-bold ${cita.deuda > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
-                      {cita.deuda > 0 ? `Debe: $${cita.deuda}` : 'Pagado'}
-                    </p>
-                    <p className="text-[10px] text-slate-500 uppercase tracking-tighter">Status Financiero</p>
-                  </div>
-                  
-                  {/* BOTÓN TÁCTICO WHATSAPP */}
-                  <button className="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all">
-                    <MessageCircle size={18}/>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        .input-kb { 
+            width: 100%; 
+            padding: 1.25rem; 
+            border-radius: 1.8rem; 
+            background: white; 
+            border: 1px solid #e2e8f0; 
+            color: var(--kb-dark); 
+            font-weight: 600; 
+            transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+        }
+
+        .input-kb:focus { 
+            border-color: var(--kb-gold); 
+            outline: none; 
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-access { 
+            background: var(--kb-dark); 
+            color: white;
+            transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1); 
+            font-weight: 900; 
+            letter-spacing: 0.2em; 
+            border-radius: 1.8rem;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+        }
+
+        .btn-access:hover:not(:disabled) { 
+            background: var(--kb-gold);
+            transform: translateY(-3px); 
+            box-shadow: 0 20px 40px -10px rgba(197, 160, 89, 0.4); 
+        }
+
+        /* Animación de la Estrella KB */
+        @keyframes star-spin {
+            0% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 0px transparent); }
+            50% { transform: rotate(180deg) scale(1.1); filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.5)); }
+            100% { transform: rotate(360deg) scale(1); filter: drop-shadow(0 0 0px transparent); }
+        }
+        .kb-star { 
+            color: var(--kb-gold); 
+            display: inline-block;
+            animation: star-spin 4s infinite linear;
+            font-size: 3rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--kb-gold), transparent);
+            animation: scan 4s linear infinite;
+            opacity: 0.3;
+        }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-md w-full glass p-12 md:p-16 relative overflow-hidden">
+        <div class="scan-line"></div>
+        
+        <header class="mb-12 text-center">
+            <div class="mb-6">
+                <span class="kb-star" id="secret-trigger">✦</span>
+            </div>
+            <h1 class="text-5xl font-black italic tracking-tighter uppercase leading-none text-slate-900">
+                K.B <span style="color: var(--kb-gold)">SYSTEM</span>
+            </h1>
+            <div class="flex items-center justify-center gap-3 mt-6">
+                <div class="h-[1px] w-10 bg-slate-200"></div>
+                <p class="text-[9px] font-black text-[#c5a059] uppercase tracking-[0.5em] italic">Auth Protocol v4.0</p>
+                <div class="h-[1px] w-10 bg-slate-200"></div>
+            </div>
+        </header>
+
+        <form id="loginForm" class="space-y-6">
+            <div class="group">
+                <label class="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Identificador de Operaciones</label>
+                <input type="email" id="email" class="input-kb uppercase text-xs" placeholder="CORREO@KBTECH.PRO" required>
+            </div>
+            <div>
+                <label class="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Código de Encriptación</label>
+                <input type="password" id="password" class="input-kb" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" id="btnLogin" class="w-full btn-access p-6 text-[11px] uppercase mt-4">
+                Sincronizar ADN 🚀
+            </button>
+        </form>
+
+        <div id="error-msg" class="hidden mt-8 p-4 bg-rose-50 border border-rose-100 rounded-2xl text-center">
+            <p id="error-text" class="text-[9px] font-black text-rose-500 uppercase tracking-widest italic">⚠️ Acceso Denegado</p>
         </div>
-
-        {/* SECTOR ESTE: PANEL DE CONTROL RÁPIDO */}
-        <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5 shadow-2xl">
-          <h2 className="font-bold mb-4 text-slate-400 uppercase text-xs tracking-widest">Acciones de Comando</h2>
-          <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl mb-3 transition-all shadow-lg shadow-blue-900/20">
-            + Nueva Cita
-          </button>
-          <button className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl mb-6 border border-slate-700 transition-all">
-            Cerrar Caja del Día
-          </button>
-
-          <div className="space-y-4">
-             <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-               <p className="text-red-400 text-xs font-bold uppercase mb-1">Alerta de Frontera</p>
-               <p className="text-slate-300 text-[11px]">Tráfico pesado en San Ysidro. 3 pacientes de San Diego podrían retrasarse.</p>
-             </div>
-          </div>
-        </div>
-
-      </div>
+        
+        <footer class="mt-16 text-center">
+            <p class="text-[7px] font-bold uppercase tracking-[0.6em] text-slate-400 italic leading-loose">
+                TIJUANA INFRASTRUCTURE / K.B TECH SOLUTIONS ✦ 2026
+            </p>
+        </footer>
     </div>
-  );
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+// Mantenemos su conexión intacta
+const supabase = createClient('https://ctvqjnckxmqeejbfwmkj.supabase.co', 'sb_publishable__JScNe1oUvVbV4Vww69CLg_6EasQg3w');
+
+// --- 🕵️ PROTOCOLO SECRETO CON PIN 1437 ---
+let starClicks = 0;
+let lastClickTime = 0;
+
+document.getElementById('secret-trigger').onclick = () => {
+    const currentTime = new Date().getTime();
+    if (currentTime - lastClickTime > 1000) starClicks = 0;
+    starClicks++;
+    lastClickTime = currentTime;
+
+    if (starClicks === 3) {
+        const masterPin = prompt("SISTEMA DE MANDO ✦ INGRESE CÓDIGO DE ACCESO:");
+        if (masterPin === "1437") {
+            alert("ADN CONFIRMADO. BIENVENIDO COMANDANTE.");
+            window.location.href = 'secreto.html';
+        } else {
+            alert("PIN INCORRECTO.");
+            starClicks = 0;
+        }
+    }
 };
 
-// Componente de Tarjeta de Métrica
-const MetricCard = ({ title, value, color, icon }) => (
-  <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl">
-    <div className="flex justify-between items-center mb-1">
-      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">{title}</span>
-      <div className={`text-${color}-500`}>{icon}</div>
-    </div>
-    <div className="text-xl font-bold text-slate-100">{value}</div>
-  </div>
-);
+document.getElementById('loginForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const emailVal = document.getElementById('email').value.trim();
+    const passVal = document.getElementById('password').value;
+    const btn = document.getElementById('btnLogin');
+    const msg = document.getElementById('error-msg');
+    const errorText = document.getElementById('error-text');
 
-export default KB_Tech_Dashboard;
+    btn.innerText = "VERIFICANDO ADN...";
+    btn.disabled = true;
+    msg.classList.add('hidden');
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: emailVal,
+            password: passVal
+        });
+
+        if (error) throw error;
+
+        const { data: usuario, error: userError } = await supabase
+            .from('Usuarios')
+            .select('*')
+            .eq('email', emailVal.toLowerCase())
+            .single();
+
+        if (userError || !usuario) {
+             const { data: retryUser } = await supabase.from('Usuarios').select('*').eq('id', data.user.id).single();
+             if(!retryUser) throw new Error("PERFIL NO REGISTRADO");
+             usuario = retryUser;
+        }
+
+        localStorage.setItem('user_id', data.user.id);
+        localStorage.setItem('rol', usuario.rol);
+        localStorage.setItem('nombre', usuario.nombre);
+
+        btn.innerText = "ACCESO CONCEDIDO ✦";
+        btn.style.background = "#10b981";
+
+        setTimeout(() => {
+            if (usuario.rol === 'doctor') {
+                window.location.href = `app.html?id=${data.user.id}`;
+            } else if (usuario.rol === 'asistente') {
+                window.location.href = 'asistente.html';
+            } else {
+                throw new Error("RANGO NO AUTORIZADO");
+            }
+        }, 800);
+
+    } catch (err) {
+        btn.innerText = "REINTENTAR";
+        btn.disabled = false;
+        errorText.innerText = "⚠️ " + err.message.toUpperCase();
+        msg.classList.remove('hidden');
+    }
+};
+</script>
+</body>
+</html>
