@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>K.B SYSTEM | ALTA DE PERSONAL</title>
+    
+    <!-- Tailwind & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --luxe-gold: #c5a059;
+            --luxe-bg: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--luxe-bg);
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Tarjetas y Contenedores */
+        .card-luxe {
+            background-color: #ffffff;
+            border-radius: 2.5rem;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(197, 160, 89, 0.1);
+        }
+
+        /* Inputs */
+        .input-luxe {
+            width: 100%;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            border-radius: 1.25rem;
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .input-luxe:focus {
+            background-color: #ffffff;
+            border-color: var(--luxe-gold);
+            box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
+        }
+
+        .label-luxe {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Botón Principal */
+        .btn-gold {
+            background-color: var(--luxe-gold);
+            color: #ffffff;
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.8rem;
+            width: 100%;
+            box-shadow: 0 8px 25px -5px rgba(197, 160, 89, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-gold:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -5px rgba(197, 160, 89, 0.6);
+            background-color: #b08d4a;
+        }
+        .btn-gold:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Selector de Rango (Radio Buttons) */
+        .role-selector input[type="radio"]:checked + div {
+            border-color: var(--luxe-gold);
+            background-color: rgba(197, 160, 89, 0.05);
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.15);
+        }
+        .role-selector input[type="radio"]:checked + div .role-icon {
+            background-color: var(--luxe-gold);
+            color: white;
+        }
+        .role-selector input[type="radio"]:checked + div .role-text {
+            color: var(--luxe-gold);
+        }
+
+        /* Animación Carga */
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+
+    <div class="w-full max-w-xl card-luxe relative overflow-hidden">
+        <!-- Haz de Luz Superior -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-slate-800 via-[#c5a059] to-slate-800"></div>
+        
+        <div class="p-8 md:p-10">
+            <!-- HEADER MANDO CENTRAL -->
+            <header class="text-center mb-8">
+                <div class="w-14 h-14 bg-slate-900 rounded-[1.2rem] flex items-center justify-center mx-auto mb-4 shadow-[0_10px_20px_rgba(0,0,0,0.2)]">
+                    <span class="text-[#c5a059] font-black text-2xl">🛡️</span>
+                </div>
+                <h1 class="text-[10px] font-black uppercase tracking-[0.3em] text-[#c5a059] mb-1">Mando Central de Operaciones</h1>
+                <h2 class="text-2xl font-black tracking-tighter text-slate-800 uppercase">Alta de Personal</h2>
+            </header>
+
+            <form id="registroForm" class="space-y-6">
+                
+                <!-- 1. SELECTOR DE RANGO (ROL) -->
+                <div>
+                    <label class="label-luxe">Seleccionar Rango Operativo</label>
+                    <div class="grid grid-cols-2 gap-4 role-selector">
+                        <!-- Opción Doctor -->
+                        <label class="cursor-pointer relative">
+                            <input type="radio" name="rol" value="doctor" class="peer hidden" checked onchange="toggleForm()">
+                            <div class="border-2 border-slate-100 rounded-2xl p-4 transition-all flex flex-col items-center gap-2">
+                                <div class="role-icon w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-black transition-colors">⚕️</div>
+                                <span class="role-text font-black text-xs uppercase tracking-widest text-slate-500 transition-colors">Doctor</span>
+                            </div>
+                        </label>
+                        
+                        <!-- Opción Asistente -->
+                        <label class="cursor-pointer relative">
+                            <input type="radio" name="rol" value="asistente" class="peer hidden" onchange="toggleForm()">
+                            <div class="border-2 border-slate-100 rounded-2xl p-4 transition-all flex flex-col items-center gap-2">
+                                <div class="role-icon w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-black transition-colors">🎧</div>
+                                <span class="role-text font-black text-xs uppercase tracking-widest text-slate-500 transition-colors">Asistente</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 2. CREDENCIALES DE ACCESO (COMÚN) -->
+                <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100 space-y-4">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-2">Credenciales de Acceso (Auth)</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-luxe">Correo Electrónico</label>
+                            <input type="email" id="email" placeholder="dr.smith@kbsystem.com" class="input-luxe" required>
+                        </div>
+                        <div>
+                            <label class="label-luxe">Contraseña Asignada</label>
+                            <input type="password" id="password" placeholder="••••••••" class="input-luxe" required minlength="6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. CONFIGURACIÓN ESPECÍFICA (DOCTOR) -->
+                <div id="sectionDoctor" class="bg-[#c5a059]/5 p-5 rounded-3xl border border-[#c5a059]/20 space-y-4 transition-all">
+                    <p class="text-[9px] font-black text-[#c5a059] uppercase tracking-widest border-b border-[#c5a059]/20 pb-2">Configuración Élite: Doctor</p>
+                    
+                    <div>
+                        <label class="label-luxe">Nombre Profesional (Ej. Kevin Briseño)</label>
+                        <input type="text" id="nombreDoc" placeholder="Su nombre visible para pacientes" class="input-luxe">
+                    </div>
+                    <div>
+                        <label class="label-luxe">Google Calendar ID (Make.com Sync)</label>
+                        <input type="text" id="gcalId" placeholder="ejemplo@group.calendar.google.com" class="input-luxe font-mono text-sm">
+                        <p class="text-[10px] text-slate-400 mt-2 font-semibold italic ml-2">Vital para automatización y bloqueo de agenda externa.</p>
+                    </div>
+                </div>
+
+                <!-- 4. CONFIGURACIÓN ESPECÍFICA (ASISTENTE) -->
+                <div id="sectionAsistente" class="hidden bg-blue-50/50 p-5 rounded-3xl border border-blue-100 space-y-4 transition-all">
+                    <p class="text-[9px] font-black text-blue-500 uppercase tracking-widest border-b border-blue-200 pb-2">Asignación Operativa: Asistente</p>
+                    
+                    <div>
+                        <label class="label-luxe">Doctor a Cargo</label>
+                        <select id="doctorAsignado" class="input-luxe cursor-pointer">
+                            <option value="">Cargando doctores de la clínica...</option>
+                        </select>
+                        <p class="text-[10px] text-slate-400 mt-2 font-semibold italic ml-2">Seleccione de quién gestionará la agenda.</p>
+                    </div>
+                </div>
+
+                <!-- FEEDBACK VISUAL -->
+                <div id="statusMsg" class="hidden text-center p-3 rounded-xl text-xs font-bold uppercase tracking-widest"></div>
+
+                <!-- BOTÓN DE ACCIÓN -->
+                <div class="pt-4">
+                    <button type="submit" id="btnSubmit" class="btn-gold relative overflow-hidden group flex justify-center items-center gap-2">
+                        <span id="btnText">Dar de Alta en Sistema</span>
+                        <svg id="btnSpinner" class="hidden w-5 h-5 text-white spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- MOTOR LÓGICO Y CONEXIÓN SUPABASE -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        // 1. CREDENCIALES
+        const SUPABASE_URL = 'https://hymwekomndkxdxsxqhyq.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 2. RECUPERAR CLINICA DEL ADMIN
+        let clinicaId = localStorage.getItem('clinica_id');
+        if(!clinicaId) {
+            clinicaId = 'clinica-demo-001'; // Fallback para pruebas
+            localStorage.setItem('clinica_id', clinicaId);
+        }
+
+        // 3. UI TOGGLE & INICIALIZACIÓN
+        window.toggleForm = () => {
+            const rol = document.querySelector('input[name="rol"]:checked').value;
+            const secDoc = document.getElementById('sectionDoctor');
+            const secAsis = document.getElementById('sectionAsistente');
+
+            if (rol === 'doctor') {
+                secDoc.classList.remove('hidden');
+                secAsis.classList.add('hidden');
+                // Atributos required
+                document.getElementById('nombreDoc').required = true;
+                document.getElementById('doctorAsignado').required = false;
+            } else {
+                secDoc.classList.add('hidden');
+                secAsis.classList.remove('hidden');
+                // Atributos required
+                document.getElementById('nombreDoc').required = false;
+                document.getElementById('doctorAsignado').required = true;
+                cargarDoctoresDropdown();
+            }
+        };
+
+        // Cargar doctores para el select del asistente
+        async function cargarDoctoresDropdown() {
+            const select = document.getElementById('doctorAsignado');
+            select.innerHTML = '<option value="">Cargando...</option>';
+            
+            const { data, error } = await supabase
+                .from('doctores')
+                .select('id, nombre_profesional')
+                .eq('clinica_id', clinicaId);
+                
+            if (data && data.length > 0) {
+                select.innerHTML = '<option value="">-- Seleccione el Doctor --</option>' + 
+                    data.map(d => `<option value="${d.id}">Dr. ${d.nombre_profesional}</option>`).join('');
+            } else {
+                select.innerHTML = '<option value="">No hay doctores registrados</option>';
+            }
+        }
+
+        // Ejecutar toggle al inicio para setear estado correcto
+        toggleForm();
+
+        // 4. LÓGICA DE DOBLE REGISTRO ATÓMICO
+        document.getElementById('registroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnSubmit');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('btnSpinner');
+            const statusMsg = document.getElementById('statusMsg');
+
+            // Preparar UI
+            btn.disabled = true;
+            btnText.innerText = 'Procesando Creación...';
+            spinner.classList.remove('hidden');
+            statusMsg.classList.add('hidden');
+
+            try {
+                const rol = document.querySelector('input[name="rol"]:checked').value;
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+
+                // PASO 1: CREAR CUENTA EN SUPABASE AUTH
+                // Nota: Por defecto, supabase.auth.signUp inicia sesión con el nuevo usuario.
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+
+                if (authError) throw new Error(authError.message);
+                
+                const newUserId = authData.user.id;
+
+                // PASO 2: CREAR PERFIL EN TABLA `usuarios`
+                const { error: userError } = await supabase.from('usuarios').insert({
+                    id: newUserId,
+                    email: email,
+                    rol: rol,
+                    clinica_id: clinicaId
+                });
+
+                if (userError) throw new Error("Error al crear perfil base: " + userError.message);
+
+                // PASO 3: CREAR REGISTRO ESPECÍFICO (Doctor o Asistente)
+                if (rol === 'doctor') {
+                    const nombre = document.getElementById('nombreDoc').value.trim();
+                    const gcal = document.getElementById('gcalId').value.trim();
+
+                    const { error: docError } = await supabase.from('doctores').insert({
+                        id: newUserId,
+                        clinica_id: clinicaId,
+                        nombre_profesional: nombre,
+                        google_calendar_id: gcal
+                    });
+                    if (docError) throw new Error("Error al configurar Doctor: " + docError.message);
+
+                } else if (rol === 'asistente') {
+                    const docA Cargo = document.getElementById('doctorAsignado').value;
+
+                    const { error: asisError } = await supabase.from('asistentes').insert({
+                        id: newUserId,
+                        clinica_id: clinicaId,
+                        doctor_id: docA Cargo
+                    });
+                    if (asisError) throw new Error("Error al configurar Asistente: " + asisError.message);
+                }
+
+                // ÉXITO TOTAL
+                statusMsg.className = 'p-3 rounded-xl text-xs font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-200 mt-4';
+                statusMsg.innerText = `✓ ${rol.toUpperCase()} CREADO EXITOSAMENTE`;
+                statusMsg.classList.remove('hidden');
+                
+                // Limpiar Formulario
+                document.getElementById('registroForm').reset();
+                toggleForm();
+
+                // Alerta para el Admin (recordatorio de sesión)
+                setTimeout(() => {
+                    alert("⚠️ Comandante: Supabase Auth ha creado la cuenta. Es posible que su sesión actual de administrador haya sido reemplazada por la del nuevo usuario en este navegador. Si presenta problemas para seguir creando usuarios, refresque la página o vuelva a iniciar sesión.");
+                }, 500);
+
+            } catch (err) {
+                console.error(err);
+                statusMsg.className = 'p-3 rounded-xl text-xs font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-200 mt-4';
+                statusMsg.innerText = `❌ ERROR: ${err.message}`;
+                statusMsg.classList.remove('hidden');
+            } finally {
+                // Restaurar UI
+                btn.disabled = false;
+                btnText.innerText = 'Dar de Alta en Sistema';
+                spinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
