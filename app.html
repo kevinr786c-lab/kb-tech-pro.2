@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K.B DOCTOR | NODO MAESTRO ✦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; padding: 1.5rem; }
+        .card-cita { background: white; border-radius: 2rem; border: 1px solid rgba(197, 160, 89, 0.1); padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
+        .kb-header { background: #0f172a; border-radius: 2.5rem; padding: 2rem; color: white; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="max-w-xl mx-auto">
+        <header class="kb-header flex justify-between items-center shadow-2xl">
+            <div>
+                <p class="text-[9px] font-black uppercase text-[#c5a059] tracking-widest mb-1">Radar Operativo</p>
+                <h1 class="text-2xl font-black italic uppercase italic">Doctor <span class="text-[#c5a059]">K.B</span></h1>
+            </div>
+            <input type="date" id="fechaFiltro" class="bg-slate-800 text-white rounded-xl p-2 text-xs border-none font-bold">
+        </header>
+
+        <div id="listaCitas" class="space-y-4 text-slate-800">
+            </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+        const supabase = createClient('https://hymwekomndkxdxsxqhyq.supabase.co', 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_');
+        
+        async function cargarCitas() {
+            const fecha = document.getElementById('fechaFiltro').value || new Date().toISOString().split('T')[0];
+            const { data } = await supabase.from('citas_agenda').select('*, pacientes(*)').eq('doctor_id', localStorage.getItem('user_id')).eq('fecha', fecha);
+            
+            const container = document.getElementById('listaCitas');
+            container.innerHTML = data.map(c => `
+                <div class="card-cita flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] font-black text-[#c5a059] uppercase">${c.hora_inicio.slice(0,5)} HRS</p>
+                        <h3 class="font-black text-slate-900 uppercase">${c.pacientes.nombre_completo}</h3>
+                    </div>
+                    <span class="text-[8px] font-black uppercase bg-slate-100 px-3 py-1 rounded-full">${c.estado}</span>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('fechaFiltro').onchange = cargarCitas;
+        cargarCitas();
+    </script>
+</body>
+</html>
