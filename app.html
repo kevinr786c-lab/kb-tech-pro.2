@@ -2,52 +2,316 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.B DOCTOR | NODO MAESTRO ✦</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>K.B SYSTEM | NODO MAESTRO</title>
+    
+    <!-- Tailwind & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; padding: 1.5rem; }
-        .card-cita { background: white; border-radius: 2rem; border: 1px solid rgba(197, 160, 89, 0.1); padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
-        .kb-header { background: #0f172a; border-radius: 2.5rem; padding: 2rem; color: white; margin-bottom: 2rem; }
+        :root {
+            --luxe-gold: #c5a059;
+            --luxe-bg: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--luxe-bg);
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            /* Prevents bounce on mobile iOS */
+            overscroll-behavior-y: none; 
+        }
+
+        /* App Container (Fuerza proporciones de móvil incluso en PC) */
+        .app-container {
+            max-w-md;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: var(--luxe-bg);
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        /* Tarjetas Luxe */
+        .card-luxe {
+            background-color: #ffffff;
+            border-radius: 2.2rem;
+            box-shadow: 0 8px 30px -10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(197, 160, 89, 0.08);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-luxe:active {
+            transform: scale(0.97);
+        }
+
+        /* Header Curvo */
+        .header-app {
+            background-color: #ffffff;
+            border-bottom-left-radius: 2.5rem;
+            border-bottom-right-radius: 2.5rem;
+            box-shadow: 0 10px 30px -15px rgba(0,0,0,0.05);
+            padding: 2.5rem 1.5rem 2rem 1.5rem;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+        }
+
+        /* Selector de Fecha Elegante */
+        .date-picker-luxe {
+            width: 100%;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            outline: none;
+            appearance: none;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .date-picker-luxe:focus {
+            background-color: #ffffff;
+            border-color: var(--luxe-gold);
+            box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
+        }
+
+        /* Badges de Estado */
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+        .badge-confirmada { background-color: #ecfdf5; color: #10b981; border: 1px solid #10b981; }
+        .badge-pendiente { background-color: #fffbeb; color: #f59e0b; border: 1px solid #f59e0b; }
+        .badge-cancelada { background-color: #fef2f2; color: #ef4444; border: 1px solid #ef4444; }
+        .badge-completada { background-color: #eff6ff; color: #3b82f6; border: 1px solid #3b82f6; }
+
+        /* Ocultar scrollbars */
+        ::-webkit-scrollbar { display: none; }
+
+        .pulse-gold { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(197, 160, 89, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); }
+        }
     </style>
 </head>
 <body>
-    <div class="max-w-xl mx-auto">
-        <header class="kb-header flex justify-between items-center shadow-2xl">
-            <div>
-                <p class="text-[9px] font-black uppercase text-[#c5a059] tracking-widest mb-1">Radar Operativo</p>
-                <h1 class="text-2xl font-black italic uppercase italic">Doctor <span class="text-[#c5a059]">K.B</span></h1>
+
+    <div class="max-w-md mx-auto app-container flex flex-col h-screen">
+        
+        <!-- HEADER (FIJO) -->
+        <header class="header-app shrink-0 z-20">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <p class="text-[9px] font-black uppercase tracking-[0.3em] text-[#c5a059] mb-1 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Nodo Maestro
+                    </p>
+                    <h1 id="docName" class="text-2xl font-black uppercase tracking-tighter text-slate-800 leading-none">DR. CARGANDO...</h1>
+                </div>
+                <div class="w-12 h-12 bg-slate-900 rounded-[1.2rem] flex items-center justify-center shadow-lg">
+                    <span class="text-[#c5a059] font-black text-xl">✦</span>
+                </div>
             </div>
-            <input type="date" id="fechaFiltro" class="bg-slate-800 text-white rounded-xl p-2 text-xs border-none font-bold">
+
+            <!-- FILTRO DE FECHA -->
+            <div class="relative">
+                <input type="date" id="fechaFiltro" class="date-picker-luxe shadow-inner">
+            </div>
         </header>
 
-        <div id="listaCitas" class="space-y-4 text-slate-800">
+        <!-- CONTENIDO SCROLLABLE -->
+        <main class="flex-1 overflow-y-auto pb-10 px-5 pt-6 z-10">
+            
+            <!-- MÉTRICAS EN TIEMPO REAL -->
+            <div class="flex gap-4 mb-8">
+                <div class="flex-1 card-luxe p-5 text-center flex flex-col justify-center">
+                    <p class="text-[8px] font-black uppercase text-slate-400 tracking-[0.2em]">Total Citas</p>
+                    <p id="totalCitas" class="text-4xl font-black text-slate-800 mt-1 tracking-tighter">0</p>
+                </div>
+                <div id="pendientesCard" class="flex-1 card-luxe p-5 text-center flex flex-col justify-center border border-[#c5a059]/30 bg-gradient-to-b from-white to-amber-50/30">
+                    <p class="text-[8px] font-black uppercase text-[#c5a059] tracking-[0.2em]">Pendientes</p>
+                    <p id="totalPendientes" class="text-4xl font-black text-[#c5a059] mt-1 tracking-tighter">0</p>
+                </div>
             </div>
+
+            <!-- LISTA DE OBJETIVOS -->
+            <div class="mb-4 flex justify-between items-end pl-2">
+                <h2 class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Agenda Operativa</h2>
+                <div id="loader" class="hidden w-4 h-4 border-2 border-[#c5a059] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+
+            <div id="appointmentsList" class="space-y-4">
+                <!-- Tarjetas dinámicas inyectadas por JS -->
+            </div>
+
+        </main>
     </div>
 
+    <!-- SCRIPT DE INTELIGENCIA Y CONEXIÓN -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-        const supabase = createClient('https://hymwekomndkxdxsxqhyq.supabase.co', 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_');
-        
-        async function cargarCitas() {
-            const fecha = document.getElementById('fechaFiltro').value || new Date().toISOString().split('T')[0];
-            const { data } = await supabase.from('citas_agenda').select('*, pacientes(*)').eq('doctor_id', localStorage.getItem('user_id')).eq('fecha', fecha);
-            
-            const container = document.getElementById('listaCitas');
-            container.innerHTML = data.map(c => `
-                <div class="card-cita flex justify-between items-center">
-                    <div>
-                        <p class="text-[10px] font-black text-[#c5a059] uppercase">${c.hora_inicio.slice(0,5)} HRS</p>
-                        <h3 class="font-black text-slate-900 uppercase">${c.pacientes.nombre_completo}</h3>
-                    </div>
-                    <span class="text-[8px] font-black uppercase bg-slate-100 px-3 py-1 rounded-full">${c.estado}</span>
-                </div>
-            `).join('');
+
+        // 1. CONFIGURACIÓN SUPABASE
+        const SUPABASE_URL = 'https://hymwekomndkxdxsxqhyq.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 2. RECUPERACIÓN DE CREDENCIALES (LOCALSTORAGE)
+        let userId = localStorage.getItem('user_id'); 
+        let clinicaId = localStorage.getItem('clinica_id');
+
+        // Mock para desarrollo si no hay sesión
+        if (!userId || !clinicaId) {
+            console.warn("⚠️ Sesión no detectada. Iniciando Modo Demo.");
+            userId = 'doc-demo-001'; 
+            clinicaId = 'clinica-demo-001';
+            // Para propósitos reales, aquí deberías redirigir a un login: window.location.href = 'login.html';
         }
 
-        document.getElementById('fechaFiltro').onchange = cargarCitas;
-        cargarCitas();
+        // 3. REFERENCIAS AL DOM
+        const fechaInput = document.getElementById('fechaFiltro');
+        const listContainer = document.getElementById('appointmentsList');
+        const docNameEl = document.getElementById('docName');
+        const totalCitasEl = document.getElementById('totalCitas');
+        const totalPendientesEl = document.getElementById('totalPendientes');
+        const loader = document.getElementById('loader');
+        const pendientesCard = document.getElementById('pendientesCard');
+
+        // 4. INICIALIZACIÓN
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Establecer fecha por defecto a "Hoy"
+            const hoy = new Date();
+            const fechaString = hoy.toISOString().split('T')[0];
+            fechaInput.value = fechaString;
+
+            await cargarPerfilDoctor();
+            await cargarAgenda();
+
+            // Listener: Cuando el doctor cambia la fecha
+            fechaInput.addEventListener('change', cargarAgenda);
+        });
+
+        // 5. OBTENER IDENTIDAD DEL DOCTOR
+        async function cargarPerfilDoctor() {
+            const { data, error } = await supabase
+                .from('doctores')
+                .select('nombre_profesional')
+                .eq('id', userId)
+                .maybeSingle();
+
+            if (data) {
+                docNameEl.innerText = `DR. ${data.nombre_profesional.split(' ')[0]}`; // Mostrar primer nombre o apellido
+            } else {
+                docNameEl.innerText = "DR. ÉLITE";
+            }
+        }
+
+        // 6. CARGAR Y RENDERIZAR AGENDA
+        async function cargarAgenda() {
+            const fechaSeleccionada = fechaInput.value;
+            if(!fechaSeleccionada) return;
+
+            // UI Feedback
+            loader.classList.remove('hidden');
+            listContainer.innerHTML = '';
+
+            try {
+                // Consulta a base de datos (JOIN con pacientes y servicios)
+                const { data: citas, error } = await supabase
+                    .from('citas_agenda')
+                    .select(`
+                        id, 
+                        hora_inicio, 
+                        estado,
+                        pacientes (nombre_completo),
+                        servicios (nombre)
+                    `)
+                    .eq('clinica_id', clinicaId)
+                    .eq('doctor_id', userId)
+                    .eq('fecha', fechaSeleccionada)
+                    .order('hora_inicio', { ascending: true });
+
+                if (error) throw error;
+
+                // --- CALCULAR MÉTRICAS ---
+                const total = citas.length;
+                const pendientes = citas.filter(c => c.estado === 'pendiente').length;
+
+                // Actualizar Contadores
+                totalCitasEl.innerText = total;
+                totalPendientesEl.innerText = pendientes;
+
+                // Efecto táctico si hay pendientes
+                if(pendientes > 0) {
+                    pendientesCard.classList.add('pulse-gold');
+                } else {
+                    pendientesCard.classList.remove('pulse-gold');
+                }
+
+                // --- RENDERIZAR TARJETAS ---
+                if (total === 0) {
+                    listContainer.innerHTML = `
+                        <div class="text-center p-10 bg-white/50 rounded-3xl border border-dashed border-slate-200 mt-6">
+                            <div class="text-4xl mb-3 opacity-50">☕</div>
+                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Sin objetivos asignados</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                citas.forEach(cita => {
+                    // Formato de Hora (Quitar segundos)
+                    const horaFormateada = cita.hora_inicio.substring(0, 5);
+                    
+                    // Extraer nombres (manejo de nulos por si se borró un registro relacional)
+                    const nombrePaciente = cita.pacientes?.nombre_completo || 'Paciente Desconocido';
+                    const nombreServicio = cita.servicios?.nombre || 'Consulta General';
+
+                    // Etiqueta Visual
+                    let estadoLabel = cita.estado;
+                    let badgeClass = `badge-${cita.estado}`;
+
+                    // Construcción de la tarjeta
+                    const card = document.createElement('div');
+                    card.className = 'card-luxe p-5 flex items-center gap-4';
+                    card.innerHTML = `
+                        <!-- Columna Izquierda: HORA -->
+                        <div class="text-center w-16 border-r border-slate-100 pr-4 shrink-0">
+                            <p class="text-xl font-black text-slate-800 tracking-tighter">${horaFormateada}</p>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">HRS</p>
+                        </div>
+                        
+                        <!-- Columna Central: DETALLES -->
+                        <div class="flex-1 min-w-0">
+                            <p class="font-black text-sm uppercase text-slate-800 truncate">${nombrePaciente}</p>
+                            <p class="text-[9px] font-bold text-[#c5a059] uppercase tracking-widest mt-1 truncate">${nombreServicio}</p>
+                        </div>
+                        
+                        <!-- Columna Derecha: ESTADO -->
+                        <div class="shrink-0 flex flex-col items-end">
+                            <span class="badge ${badgeClass}">${estadoLabel}</span>
+                        </div>
+                    `;
+                    
+                    listContainer.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error("Error al cargar agenda:", err);
+                listContainer.innerHTML = `<p class="text-center text-xs text-red-500 font-bold p-6">Error de conexión con el servidor.</p>`;
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
     </script>
 </body>
 </html>
