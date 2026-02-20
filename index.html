@@ -3,225 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.B SYSTEM | ACCESO TOTAL ✦</title>
+    <title>K.B SYSTEM | ACCESO ÉLITE ✦</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap');
-        
-        :root { 
-            --kb-gold: #c5a059; 
-            --kb-dark: #0f172a; 
-            --kb-bg: #f8fafc;
-        }
-        
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--kb-bg); 
-            color: var(--kb-dark); 
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        /* Efecto de Vidrio Blanco */
-        .glass { 
-            background: rgba(255, 255, 255, 0.8); 
-            backdrop-filter: blur(30px); 
-            border: 1px solid rgba(197, 160, 89, 0.3); 
-            border-radius: 4rem; 
-            box-shadow: 0 40px 80px -20px rgba(15, 23, 42, 0.1);
-        }
-
-        .input-kb { 
-            width: 100%; 
-            padding: 1.25rem; 
-            border-radius: 1.8rem; 
-            background: white; 
-            border: 1px solid #e2e8f0; 
-            color: var(--kb-dark); 
-            font-weight: 600; 
-            transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
-        }
-
-        .input-kb:focus { 
-            border-color: var(--kb-gold); 
-            outline: none; 
-            box-shadow: 0 0 30px rgba(197, 160, 89, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .btn-access { 
-            background: var(--kb-dark); 
-            color: white;
-            transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1); 
-            font-weight: 900; 
-            letter-spacing: 0.2em; 
-            border-radius: 1.8rem;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
-        }
-
-        .btn-access:hover:not(:disabled) { 
-            background: var(--kb-gold);
-            transform: translateY(-3px); 
-            box-shadow: 0 20px 40px -10px rgba(197, 160, 89, 0.4); 
-        }
-
-        /* Animación de la Estrella KB */
-        @keyframes star-spin {
-            0% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 0px transparent); }
-            50% { transform: rotate(180deg) scale(1.1); filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.5)); }
-            100% { transform: rotate(360deg) scale(1); filter: drop-shadow(0 0 0px transparent); }
-        }
-        .kb-star { 
-            color: var(--kb-gold); 
-            display: inline-block;
-            animation: star-spin 4s infinite linear;
-            font-size: 3rem;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .scan-line {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--kb-gold), transparent);
-            animation: scan 4s linear infinite;
-            opacity: 0.3;
-        }
-        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+        :root { --kb-gold: #c5a059; --kb-dark: #0f172a; --kb-bg: #f8fafc; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--kb-bg); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(30px); border: 1px solid rgba(197, 160, 89, 0.2); border-radius: 4rem; box-shadow: 0 40px 80px -20px rgba(15, 23, 42, 0.1); }
+        .input-kb { width: 100%; padding: 1.25rem; border-radius: 1.8rem; border: 1px solid #e2e8f0; background: white; font-weight: 600; outline: none; transition: 0.4s; }
+        .input-kb:focus { border-color: var(--kb-gold); box-shadow: 0 0 30px rgba(197, 160, 89, 0.15); transform: translateY(-2px); }
+        .btn-access { background: var(--kb-dark); color: white; border-radius: 1.8rem; font-weight: 900; letter-spacing: 0.2em; transition: 0.5s; }
+        .btn-access:hover { background: var(--kb-gold); transform: translateY(-3px); box-shadow: 0 20px 40px -10px rgba(197, 160, 89, 0.4); }
+        .kb-star { color: var(--kb-gold); animation: spin 4s infinite linear; font-size: 3rem; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-
-    <div class="max-w-md w-full glass p-12 md:p-16 relative overflow-hidden">
-        <div class="scan-line"></div>
-        
-        <header class="mb-12 text-center">
-            <div class="mb-6">
-                <span class="kb-star" id="secret-trigger">✦</span>
-            </div>
-            <h1 class="text-5xl font-black italic tracking-tighter uppercase leading-none text-slate-900">
-                K.B <span style="color: var(--kb-gold)">SYSTEM</span>
-            </h1>
-            <div class="flex items-center justify-center gap-3 mt-6">
-                <div class="h-[1px] w-10 bg-slate-200"></div>
-                <p class="text-[9px] font-black text-[#c5a059] uppercase tracking-[0.5em] italic">Auth Protocol v4.0</p>
-                <div class="h-[1px] w-10 bg-slate-200"></div>
-            </div>
-        </header>
-
-        <form id="loginForm" class="space-y-6">
-            <div class="group">
-                <label class="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Identificador de Operaciones</label>
+    <div class="max-w-md w-full glass p-12 md:p-16 text-center">
+        <div class="mb-8"><span class="kb-star inline-block">✦</span></div>
+        <h1 class="text-4xl font-black italic tracking-tighter uppercase text-slate-900 mb-10">K.B <span style="color: var(--kb-gold)">SYSTEM</span></h1>
+        <form id="loginForm" class="space-y-6 text-left">
+            <div>
+                <label class="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Identificador</label>
                 <input type="email" id="email" class="input-kb uppercase text-xs" placeholder="CORREO@KBTECH.PRO" required>
             </div>
             <div>
-                <label class="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Código de Encriptación</label>
+                <label class="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Encriptación</label>
                 <input type="password" id="password" class="input-kb" placeholder="••••••••" required>
             </div>
-            
-            <button type="submit" id="btnLogin" class="w-full btn-access p-6 text-[11px] uppercase mt-4">
-                Sincronizar ADN 🚀
-            </button>
+            <button type="submit" id="btnLogin" class="w-full btn-access p-6 text-[11px] uppercase mt-4">Sincronizar ADN 🚀</button>
         </form>
-
-        <div id="error-msg" class="hidden mt-8 p-4 bg-rose-50 border border-rose-100 rounded-2xl text-center">
-            <p id="error-text" class="text-[9px] font-black text-rose-500 uppercase tracking-widest italic">⚠️ Acceso Denegado</p>
-        </div>
-        
-        <footer class="mt-16 text-center">
-            <p class="text-[7px] font-bold uppercase tracking-[0.6em] text-slate-400 italic leading-loose">
-                TIJUANA INFRASTRUCTURE / K.B TECH SOLUTIONS ✦ 2026
-            </p>
-        </footer>
+        <div id="error-msg" class="hidden mt-8 p-4 bg-rose-50 border border-rose-100 rounded-2xl text-[9px] font-black text-rose-500 uppercase italic">⚠️ Registro No Encontrado</div>
     </div>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+        const supabase = createClient('https://hymwekomndkxdxsxqhyq.supabase.co', 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_');
 
-// Mantenemos su conexión intacta
-const supabase = createClient('https://ctvqjnckxmqeejbfwmkj.supabase.co', 'sb_publishable__JScNe1oUvVbV4Vww69CLg_6EasQg3w');
+        document.getElementById('loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnLogin');
+            btn.innerText = "VERIFICANDO...";
+            
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            });
 
-// --- 🕵️ PROTOCOLO SECRETO CON PIN 1437 ---
-let starClicks = 0;
-let lastClickTime = 0;
-
-document.getElementById('secret-trigger').onclick = () => {
-    const currentTime = new Date().getTime();
-    if (currentTime - lastClickTime > 1000) starClicks = 0;
-    starClicks++;
-    lastClickTime = currentTime;
-
-    if (starClicks === 3) {
-        const masterPin = prompt("SISTEMA DE MANDO ✦ INGRESE CÓDIGO DE ACCESO:");
-        if (masterPin === "1437") {
-            alert("ADN CONFIRMADO. BIENVENIDO COMANDANTE.");
-            window.location.href = 'secreto.html';
-        } else {
-            alert("PIN INCORRECTO.");
-            starClicks = 0;
-        }
-    }
-};
-
-document.getElementById('loginForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const emailVal = document.getElementById('email').value.trim();
-    const passVal = document.getElementById('password').value;
-    const btn = document.getElementById('btnLogin');
-    const msg = document.getElementById('error-msg');
-    const errorText = document.getElementById('error-text');
-
-    btn.innerText = "VERIFICANDO ADN...";
-    btn.disabled = true;
-    msg.classList.add('hidden');
-
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: emailVal,
-            password: passVal
-        });
-
-        if (error) throw error;
-
-        const { data: usuario, error: userError } = await supabase
-            .from('Usuarios')
-            .select('*')
-            .eq('email', emailVal.toLowerCase())
-            .single();
-
-        if (userError || !usuario) {
-             const { data: retryUser } = await supabase.from('Usuarios').select('*').eq('id', data.user.id).single();
-             if(!retryUser) throw new Error("PERFIL NO REGISTRADO");
-             usuario = retryUser;
-        }
-
-        localStorage.setItem('user_id', data.user.id);
-        localStorage.setItem('rol', usuario.rol);
-        localStorage.setItem('nombre', usuario.nombre);
-
-        btn.innerText = "ACCESO CONCEDIDO ✦";
-        btn.style.background = "#10b981";
-
-        setTimeout(() => {
-            if (usuario.rol === 'doctor') {
-                window.location.href = `app.html?id=${data.user.id}`;
-            } else if (usuario.rol === 'asistente') {
-                window.location.href = 'asistente.html';
-            } else {
-                throw new Error("RANGO NO AUTORIZADO");
+            if (error) {
+                document.getElementById('error-msg').classList.remove('hidden');
+                btn.innerText = "REINTENTAR";
+                return;
             }
-        }, 800);
 
-    } catch (err) {
-        btn.innerText = "REINTENTAR";
-        btn.disabled = false;
-        errorText.innerText = "⚠️ " + err.message.toUpperCase();
-        msg.classList.remove('hidden');
-    }
-};
-</script>
+            const { data: user } = await supabase.from('usuarios').select('*').eq('id', data.user.id).single();
+            if (user) {
+                localStorage.setItem('user_id', user.id);
+                localStorage.setItem('clinica_id', user.clinica_id);
+                window.location.href = user.rol === 'doctor' ? 'app.html' : 'asistente.html';
+            }
+        };
+    </script>
 </body>
 </html>
