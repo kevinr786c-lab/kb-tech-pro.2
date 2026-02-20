@@ -330,63 +330,78 @@
             }
         }
 
-        // --- 6. MOTOR DE DISPONIBILIDAD MATEMÁTICO ---
-        async function cargarDisponibilidad() {
-            const fecha = document.getElementById('fecha').value;
-            const servicioId = document.getElementById('servicio').value;
-            const container = document.getElementById('slotsContainer');
-            
-            if (!fecha || !servicioId) return;
+  async function cargarDisponibilidad() {
+    const fechaInput = document.getElementById('fecha').value;
+    const servicioId = document.getElementById('servicio').value;
+    const container = document.getElementById('slotsContainer');
+    
+    if (!fechaInput || !servicioId) return;
 
-            // Bloquear estado de selectedTime
-            selectedTime = null;
-            container.innerHTML = '<p class="text-xs font-bold text-[#c5a059] animate-pulse text-center w-full">Analizando radar de disponibilidad...</p>';
+    selectedTime = null;
+    container.innerHTML = '<p class="text-xs font-bold text-[#c5a059] animate-pulse text-center w-full">Analizando radar de disponibilidad...</p>';
 
-            // Determinar duración del servicio actual
-            const servicioAct = serviciosCache.find(s => s.id == servicioId);
-            const duracion = servicioAct ? servicioAct.duracion_minutos : 30;
+    // Obtener día de la semana (1-7)
+    const fechaObj = new Date(fechaInput + 'T00:00:00');
+    const diaSemana = fechaObj.getDay() === 0 ? 7 : fechaObj.getDay();
 
-            // Traer citas de ese día para el doctor
-            const { data: citas } = await supabase
-                .from('citas_agenda')
-                .select('hora_inicio, duracion_minutos')
-                .eq('doctor_id', doctorId)
-                .eq('fecha', fecha)
-                .neq('estado', 'cancelada');
+    // 1. CONSULTAR HORARIO BASE DEL DOCTOR PARA ESE DÍA
+    const { data: horarioBase } = await supabase
+        .from('horarios_base')
+        .select('hora_inicio, hora_fin')
+        .eq('doctor_id', doctorId)
+        .eq('dia_semana', diaSemana)
+        .eq('activo', true)
+        .maybeSingle();
 
-            // Generar Slots (Jornada 09:00 a 19:00 -> 540 a 1140 min)
-            const slots = [];
-            let currentMin = 9 * 60; 
-            const endMin = 19 * 60;
+    if (!horarioBase) {
+        container.innerHTML = '<p class="text-xs font-bold text-red-400 bg-red-50 p-3 rounded-xl text-center w-full">El especialista no labora este día.</p>';
+        return;
+    }
 
-            // Filtro de horario pasado si es HOY
-            const hoyObj = new Date();
-            const esHoy = fecha === hoyObj.toISOString().split('T')[0];
-            const minActual = (hoyObj.getHours() * 60) + hoyObj.getMinutes() + 30; // Margen de 30 min
+    // 2. CONSULTAR CITAS EXISTENTES
+    const { data: citas } = await supabase
+        .from('citas_agenda')
+        .select('hora_inicio, duracion_minutos')
+        .eq('doctor_id', doctorId)
+        .eq('fecha', fechaInput)
+        .neq('estado', 'cancelada');
 
-            while (currentMin + duracion <= endMin) {
-                if (!esHoy || currentMin >= minActual) {
-                    // Verificar colisión (StartA < EndB && EndA > StartB)
-                    const colision = (citas || []).some(c => {
-                        const [h, m] = c.hora_inicio.split(':').map(Number);
-                        const cStart = (h * 60) + m;
-                        const cEnd = cStart + c.duracion_minutos;
-                        const slotEnd = currentMin + duracion;
+    // 3. GENERAR SLOTS DENTRO DEL HORARIO BASE
+    const servicioAct = serviciosCache.find(s => s.id == servicioId);
+    const duracion = servicioAct ? servicioAct.duracion_minutos : 30;
+    
+    const [hStart, mStart] = horarioBase.hora_inicio.split(':').map(Number);
+    const [hEnd, mEnd] = horarioBase.hora_fin.split(':').map(Number);
+    
+    let currentMin = (hStart * 60) + mStart;
+    const endMin = (hEnd * 60) + mEnd;
+    const slots = [];
 
-                        return (currentMin < cEnd) && (slotEnd > cStart);
-                    });
+    // Filtro para hoy
+    const ahora = new Date();
+    const esHoy = fechaInput === ahora.toISOString().split('T')[0];
+    const minActualLimit = (ahora.getHours() * 60) + ahora.getMinutes() + 60; // Margen de 1 hora
 
-                    if (!colision) {
-                        const hh = Math.floor(currentMin / 60).toString().padStart(2, '0');
-                        const mm = (currentMin % 60).toString().padStart(2, '0');
-                        slots.push(`${hh}:${mm}`);
-                    }
-                }
-                currentMin += 30; // Saltos de 30 min
+    while (currentMin + duracion <= endMin) {
+        if (!esHoy || currentMin >= minActualLimit) {
+            const colision = (citas || []).some(c => {
+                const [h, m] = c.hora_inicio.split(':').map(Number);
+                const cStart = (h * 60) + m;
+                const cEnd = cStart + c.duracion_minutos;
+                return (currentMin < cEnd) && (currentMin + duracion > cStart);
+            });
+
+            if (!colision) {
+                const hh = Math.floor(currentMin / 60).toString().padStart(2, '0');
+                const mm = (currentMin % 60).toString().padStart(2, '0');
+                slots.push(`${hh}:${mm}`);
             }
-
-            renderizarSlots(slots);
         }
+        currentMin += 30; // Intervalos de 30 min
+    }
+
+    renderizarSlots(slots);
+}
 
         function renderizarSlots(slots) {
             const container = document.getElementById('slotsContainer');
