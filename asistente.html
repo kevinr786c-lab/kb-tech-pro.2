@@ -5,18 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K.B SYSTEM | ASISTENTE ÉLITE</title>
     
-    <!-- Fuentes y Tailwind -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- FullCalendar v6 -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
     <style>
         :root {
             --luxe-gold: #c5a059;
             --luxe-gold-hover: #b08d4a;
-            --bg-body: #f8fafc; /* Slate 50 */
+            --bg-body: #f8fafc;
         }
         
         body {
@@ -29,7 +27,6 @@
             overflow: hidden;
         }
 
-        /* Paneles Luxe */
         .panel-luxe {
             background-color: #ffffff;
             border-radius: 2.5rem;
@@ -37,7 +34,6 @@
             border: 1px solid rgba(197, 160, 89, 0.1);
         }
 
-        /* Inputs Luxe */
         .input-luxe {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -55,7 +51,6 @@
             background-color: #ffffff;
         }
 
-        /* Botones */
         .btn-gold {
             background-color: var(--luxe-gold);
             color: white;
@@ -67,7 +62,6 @@
             box-shadow: 0 10px 20px -5px rgba(197, 160, 89, 0.4);
         }
 
-        /* FullCalendar Luxe Overrides */
         .fc { font-family: 'Plus Jakarta Sans', sans-serif; }
         .fc-toolbar-title { font-weight: 900 !important; text-transform: uppercase; color: #0f172a; font-size: 1.5rem !important; }
         .fc-button-primary {
@@ -80,39 +74,29 @@
             font-size: 0.75rem !important;
             padding: 0.5rem 1rem !important;
             box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
-            transition: all 0.2s !important;
         }
         .fc-button-primary:hover, .fc-button-primary:not(:disabled).fc-button-active {
             background-color: var(--luxe-gold) !important;
             color: white !important;
-            border-color: var(--luxe-gold) !important;
         }
-        .fc-event {
-            border: none !important;
-            border-radius: 8px !important;
-            padding: 2px 4px !important;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-        .fc-event:hover { transform: scale(1.02); }
-        .fc-event-main { font-weight: 800; font-size: 0.7rem; }
-        .fc-theme-standard th { border-color: #f1f5f9; padding: 10px 0; color: #64748b; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; }
-        .fc-theme-standard td { border-color: #f1f5f9; }
 
-        /* Estados de Citas */
         .estado-confirmada { background-color: #10b981 !important; color: white !important; }
         .estado-pendiente { background-color: #f59e0b !important; color: white !important; }
         .estado-cancelada { background-color: #ef4444 !important; color: white !important; }
         .estado-completada { background-color: #3b82f6 !important; color: white !important; }
 
-        /* Modal Backdrop */
         .modal-backdrop {
             background-color: rgba(15, 23, 42, 0.4);
             backdrop-filter: blur(8px);
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .modal-backdrop.active { opacity: 1; pointer-events: all; }
         
@@ -122,16 +106,10 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .modal-backdrop.active .modal-content { transform: scale(1) translateY(0); opacity: 1; }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="p-6 gap-6">
 
-    <!-- CABECERA -->
     <header class="panel-luxe p-6 flex justify-between items-center z-10">
         <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-900/20">
@@ -144,36 +122,23 @@
         </div>
 
         <div class="flex items-center gap-4 w-96">
-            <div class="w-full">
-                <select id="doctorSelect" class="input-luxe cursor-pointer text-sm uppercase tracking-wide">
-                    <option value="">Cargando Doctores...</option>
-                </select>
-            </div>
+            <select id="doctorSelect" class="input-luxe cursor-pointer text-sm uppercase tracking-wide">
+                <option value="">Cargando Doctores...</option>
+            </select>
         </div>
     </header>
 
-    <!-- CALENDARIO -->
     <main class="flex-1 panel-luxe p-8 overflow-hidden relative flex flex-col">
-        <div class="flex justify-end gap-4 mb-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
-            <span class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-emerald-500"></div> Confirmada</span>
-            <span class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-amber-500"></div> Pendiente</span>
-            <span class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500"></div> Cancelada</span>
-        </div>
         <div id="calendar" class="flex-1"></div>
     </main>
 
-    <!-- MODAL DE CITAS -->
-    <div id="citaModal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="modal-content panel-luxe w-full max-w-2xl p-8 relative overflow-hidden">
-            <!-- Decoración -->
-            <div class="absolute top-0 right-0 w-32 h-32 bg-[#c5a059] opacity-5 rounded-bl-[100px] pointer-events-none"></div>
-
+    <div id="citaModal" class="modal-backdrop">
+        <div class="modal-content panel-luxe w-full max-w-2xl p-8 relative overflow-hidden bg-white">
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <h2 id="modalTitle" class="text-xl font-black uppercase tracking-tight">Agendar Cita</h2>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Gestión Operativa</p>
                 </div>
-                <button onclick="cerrarModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-700 transition font-bold">✕</button>
+                <button onclick="cerrarModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 font-bold">✕</button>
             </div>
 
             <form id="citaForm" class="space-y-4">
@@ -182,92 +147,52 @@
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Fecha</label>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Fecha</label>
                         <input type="date" id="fechaCita" class="input-luxe" required readonly>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Hora Inicio</label>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Hora Inicio</label>
                         <input type="time" id="horaInicio" class="input-luxe" required>
                     </div>
                 </div>
 
                 <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-4">
-                    <p class="text-[10px] font-black text-[#c5a059] uppercase tracking-widest border-b border-slate-200 pb-2">Datos del Paciente</p>
-                    
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Teléfono (Búsqueda Automática)</label>
-                        <input type="tel" id="telefonoPaciente" placeholder="Ej. +52 664 123 4567" class="input-luxe" required>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Nombre Completo</label>
-                            <input type="text" id="nombrePaciente" placeholder="Nombre del paciente" class="input-luxe" required>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Email (Opcional)</label>
-                            <input type="email" id="emailPaciente" placeholder="correo@ejemplo.com" class="input-luxe">
-                        </div>
-                    </div>
+                    <input type="tel" id="telefonoPaciente" placeholder="TELÉFONO" class="input-luxe" required>
+                    <input type="text" id="nombrePaciente" placeholder="NOMBRE COMPLETO" class="input-luxe" required>
+                    <input type="email" id="emailPaciente" placeholder="EMAIL (OPCIONAL)" class="input-luxe">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Servicio Médico</label>
-                        <select id="servicioSelect" class="input-luxe cursor-pointer" required>
-                            <option value="">Seleccione un servicio...</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Estado de Cita</label>
-                        <select id="estadoCita" class="input-luxe cursor-pointer font-bold" required>
-                            <option value="pendiente" class="text-amber-500">Pendiente</option>
-                            <option value="confirmada" class="text-emerald-500">Confirmada</option>
-                            <option value="completada" class="text-blue-500">Completada</option>
-                            <option value="cancelada" class="text-red-500">Cancelada</option>
-                        </select>
-                    </div>
+                    <select id="servicioSelect" class="input-luxe" required></select>
+                    <select id="estadoCita" class="input-luxe font-bold" required>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="confirmada">Confirmada</option>
+                        <option value="completada">Completada</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
                 </div>
 
-                <div class="pt-6 border-t border-slate-100 flex gap-4 mt-6">
-                    <button type="button" id="btnWhatsapp" class="hidden flex-1 py-3 px-4 bg-emerald-50 text-emerald-600 border border-emerald-200 font-black text-[11px] uppercase tracking-widest rounded-xl hover:bg-emerald-500 hover:text-white transition shadow-sm">
-                        📲 Enviar WhatsApp
-                    </button>
-                    <button type="submit" id="btnGuardar" class="flex-1 py-3 px-4 btn-gold font-black text-[11px] uppercase tracking-widest rounded-xl shadow-lg">
-                        Guardar Operación
-                    </button>
+                <div class="pt-6 flex gap-4 mt-6">
+                    <button type="button" id="btnWhatsapp" class="hidden flex-1 py-3 px-4 bg-emerald-50 text-emerald-600 border border-emerald-200 font-black text-[11px] uppercase rounded-xl">📲 WhatsApp</button>
+                    <button type="submit" id="btnGuardar" class="flex-1 py-3 px-4 btn-gold font-black text-[11px] uppercase rounded-xl">Guardar Operación</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-        // 1. Configuración de Credenciales
-        const SUPABASE_URL = 'https://hymwekomndkxdxsxqhyq.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_';
-        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = createClient('https://hymwekomndkxdxsxqhyq.supabase.co', 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_');
 
-        // 2. Variables Globales
         let calendar;
-        let clinica_id = localStorage.getItem('clinica_id');
+        let clinica_id = localStorage.getItem('clinica_id') || 'cc1fad06-c67f-47e1-8bb3-c31bdd4966d1';
         let serviciosActuales = [];
 
-        // Mock para desarrollo si no existe clinica_id
-        if (!clinica_id) {
-            clinica_id = 'clinica-demo-001'; // Cambiar en producción
-            localStorage.setItem('clinica_id', clinica_id);
-            console.warn("No se encontró clinica_id en localStorage. Usando mock:", clinica_id);
-        }
-
-        // 3. Inicialización
         document.addEventListener('DOMContentLoaded', async () => {
             await cargarDoctores();
             inicializarCalendario();
             
-            // Listeners
             document.getElementById('doctorSelect').addEventListener('change', async (e) => {
                 await cargarServicios(e.target.value);
                 calendar.refetchEvents();
@@ -276,264 +201,122 @@
             document.getElementById('citaForm').addEventListener('submit', guardarCita);
         });
 
-        // 4. Funciones de Carga de Datos
-     async function cargarServicios(doctorId) {
-    const select = document.getElementById('servicioSelect');
-    
-    const { data, error } = await supabase
-        .from('servicios')
-        .select('id, nombre, duracion_minutos')
-        .eq('doctor_id', doctorId);
+        async function cargarDoctores() {
+            const select = document.getElementById('doctorSelect');
+            const { data, error } = await supabase
+                .from('doctores')
+                .select('id, nombre_profesional')
+                .eq('clinica_id', clinica_id);
 
-    if (data) {
-        serviciosActuales = data;
-        select.innerHTML = data.map(s => `
-            <option value="${s.id}">${s.nombre} (${s.duracion_minutos} min)</option>
-        `).join('');
-    }
-}
+            if (data && data.length > 0) {
+                select.innerHTML = data.map(d => `<option value="${d.id}">⚕️ DR. ${d.nombre_profesional}</option>`).join('');
+                await cargarServicios(data[0].id);
+            } else {
+                select.innerHTML = '<option value="">No hay doctores registrados</option>';
+            }
+        }
 
         async function cargarServicios(doctorId) {
             const select = document.getElementById('servicioSelect');
-            if (!doctorId) {
-                select.innerHTML = '<option value="">Seleccione un doctor primero</option>';
-                serviciosActuales = [];
-                return;
-            }
-
-            const { data, error } = await supabase
+            const { data } = await supabase
                 .from('servicios')
                 .select('id, nombre, duracion_minutos')
                 .eq('doctor_id', doctorId);
 
-            if (error) {
-                console.error('Error cargando servicios:', error);
-                return;
+            if (data) {
+                serviciosActuales = data;
+                select.innerHTML = data.map(s => `<option value="${s.id}">${s.nombre} (${s.duracion_minutos} min)</option>`).join('');
             }
-
-            serviciosActuales = data;
-            select.innerHTML = data.map(s => `<option value="${s.id}">${s.nombre} (${s.duracion_minutos} min)</option>`).join('');
         }
 
-        // 5. Motor del Calendario
         function inicializarCalendario() {
-            const calendarEl = document.getElementById('calendar');
-            calendar = new FullCalendar.Calendar(calendarEl, {
+            calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
                 locale: 'es',
                 initialView: 'timeGridWeek',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
                 slotMinTime: '08:00:00',
                 slotMaxTime: '20:00:00',
-                allDaySlot: false,
-                selectable: true,
-                editable: false, // Arrastrar bloqueado en este panel por seguridad
-                nowIndicator: true,
-                
-                // Carga dinámica de citas
-                events: async function(info, successCallback, failureCallback) {
-                    const doctorId = document.getElementById('doctorSelect').value;
-                    if (!doctorId) {
-                        successCallback([]);
-                        return;
-                    }
+                headerToolbar: { left: 'prev,next today', center: 'title', right: 'timeGridWeek,timeGridDay' },
+                events: async (info, success) => {
+                    const docId = document.getElementById('doctorSelect').value;
+                    if (!docId) return success([]);
 
-                    const { data, error } = await supabase
+                    const { data } = await supabase
                         .from('citas_agenda')
-                        .select(`
-                            id, fecha, hora_inicio, duracion_minutos, estado,
-                            pacientes (id, nombre_completo, telefono, email),
-                            servicios (id, nombre)
-                        `)
-                        .eq('doctor_id', doctorId)
-                        .eq('clinica_id', clinica_id)
-                        .gte('fecha', info.startStr.split('T')[0])
-                        .lte('fecha', info.endStr.split('T')[0]);
+                        .select('id, fecha, hora_inicio, duracion_minutos, estado, pacientes(nombre_completo, telefono), servicios(nombre)')
+                        .eq('doctor_id', docId);
 
-                    if (error) {
-                        console.error('Error obteniendo citas:', error);
-                        failureCallback(error);
-                        return;
-                    }
-
-                    const eventos = data.map(cita => {
-                        // Calcular fin
-                        const start = new Date(`${cita.fecha}T${cita.hora_inicio}`);
-                        const end = new Date(start.getTime() + cita.duracion_minutos * 60000);
-                        
-                        return {
-                            id: cita.id,
-                            title: `${cita.pacientes?.nombre_completo || 'Sin Nombre'} - ${cita.servicios?.nombre || 'Servicio'}`,
-                            start: start,
-                            end: end,
-                            className: `estado-${cita.estado}`,
-                            extendedProps: cita
-                        };
-                    });
-
-                    successCallback(eventos);
+                    success(data.map(c => ({
+                        id: c.id,
+                        title: `${c.pacientes?.nombre_completo || 'Paciente'}`,
+                        start: `${c.fecha}T${c.hora_inicio}`,
+                        end: new Date(new Date(`${c.fecha}T${c.hora_inicio}`).getTime() + c.duracion_minutos * 60000),
+                        className: `estado-${c.estado}`,
+                        extendedProps: c
+                    })));
                 },
-
-                // Interacción: Clic en espacio vacío (Crear)
-                select: function(info) {
-                    abrirModalCrear(info.start);
-                },
-
-                // Interacción: Clic en Cita (Editar)
-                eventClick: function(info) {
-                    abrirModalEditar(info.event);
-                }
+                select: (info) => abrirModalCrear(info.start),
+                eventClick: (info) => abrirModalEditar(info.event),
+                selectable: true
             });
             calendar.render();
         }
 
-        // 6. Lógica del Modal
         window.abrirModalCrear = (fechaObj) => {
             document.getElementById('citaForm').reset();
             document.getElementById('citaId').value = '';
-            document.getElementById('pacienteId').value = '';
-            
-            // Formatear Fecha (YYYY-MM-DD) y Hora (HH:MM)
-            const year = fechaObj.getFullYear();
-            const month = String(fechaObj.getMonth() + 1).padStart(2, '0');
-            const day = String(fechaObj.getDate()).padStart(2, '0');
-            const hours = String(fechaObj.getHours()).padStart(2, '0');
-            const minutes = String(fechaObj.getMinutes()).padStart(2, '0');
-
-            document.getElementById('fechaCita').value = `${year}-${month}-${day}`;
-            document.getElementById('horaInicio').value = `${hours}:${minutes}`;
-            
-            document.getElementById('modalTitle').innerText = 'Agendar Nueva Cita';
-            document.getElementById('btnGuardar').innerText = 'Guardar Operación';
-            document.getElementById('btnWhatsapp').classList.add('hidden');
-
+            document.getElementById('fechaCita').value = fechaObj.toISOString().split('T')[0];
+            document.getElementById('horaInicio').value = fechaObj.toTimeString().substring(0, 5);
             document.getElementById('citaModal').classList.add('active');
         };
 
         window.abrirModalEditar = (event) => {
-            const props = event.extendedProps;
-            
-            document.getElementById('citaId').value = props.id;
-            document.getElementById('fechaCita').value = props.fecha;
-            document.getElementById('horaInicio').value = props.hora_inicio.substring(0, 5); // Remover segundos
-            document.getElementById('servicioSelect').value = props.servicios?.id || '';
-            document.getElementById('estadoCita').value = props.estado;
-            
-            if (props.pacientes) {
-                document.getElementById('pacienteId').value = props.pacientes.id;
-                document.getElementById('nombrePaciente').value = props.pacientes.nombre_completo;
-                document.getElementById('telefonoPaciente').value = props.pacientes.telefono;
-                document.getElementById('emailPaciente').value = props.pacientes.email || '';
-            }
-
-            document.getElementById('modalTitle').innerText = 'Ficha de Operación';
-            document.getElementById('btnGuardar').innerText = 'Actualizar Cita';
-            
-            // Botón WhatsApp
-            const btnWs = document.getElementById('btnWhatsapp');
-            btnWs.classList.remove('hidden');
-            btnWs.onclick = () => {
-                const tel = props.pacientes.telefono.replace(/\D/g, ''); // Limpiar no-números
-                const fechaFormateada = new Date(props.fecha).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                const mensaje = `Hola ${props.pacientes.nombre_completo}, te contactamos de K.B SYSTEM para confirmar tu cita para el servicio de ${props.servicios.nombre} el día ${fechaFormateada} a las ${props.hora_inicio.substring(0, 5)}. ¿Podrías confirmarnos tu asistencia?`;
-                window.open(`https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
-            };
-
+            const p = event.extendedProps;
+            document.getElementById('citaId').value = p.id;
+            document.getElementById('fechaCita').value = p.fecha;
+            document.getElementById('horaInicio').value = p.hora_inicio.substring(0, 5);
+            document.getElementById('nombrePaciente').value = p.pacientes.nombre_completo;
+            document.getElementById('telefonoPaciente').value = p.pacientes.telefono;
+            document.getElementById('servicioSelect').value = p.servicios.id;
+            document.getElementById('estadoCita').value = p.estado;
             document.getElementById('citaModal').classList.add('active');
         };
 
-        window.cerrarModal = () => {
-            document.getElementById('citaModal').classList.remove('active');
-        };
+        window.cerrarModal = () => document.getElementById('citaModal').classList.remove('active');
 
-        // 7. Lógica de Guardado (Upsert Paciente -> Upsert Cita)
         async function guardarCita(e) {
             e.preventDefault();
-            
             const btn = document.getElementById('btnGuardar');
-            btn.innerText = 'Sincronizando...';
-            btn.disabled = true;
+            btn.innerText = "PROCESANDO...";
 
-            try {
-                const doctor_id = document.getElementById('doctorSelect').value;
-                const cita_id = document.getElementById('citaId').value;
-                let paciente_id = document.getElementById('pacienteId').value;
-                
-                const tel = document.getElementById('telefonoPaciente').value.trim();
-                const nombre = document.getElementById('nombrePaciente').value.trim();
-                const email = document.getElementById('emailPaciente').value.trim();
-                
-                const servicio_id = document.getElementById('servicioSelect').value;
-                const fecha = document.getElementById('fechaCita').value;
-                const hora_inicio = document.getElementById('horaInicio').value;
-                const estado = document.getElementById('estadoCita').value;
+            const doctor_id = document.getElementById('doctorSelect').value;
+            const tel = document.getElementById('telefonoPaciente').value;
+            const nombre = document.getElementById('nombrePaciente').value;
+            const servicio_id = document.getElementById('servicioSelect').value;
 
-                if (!doctor_id || !servicio_id) throw new Error("Faltan datos clave (Doctor o Servicio)");
-
-                // --- PASO 1: Upsert Paciente ---
-                // Buscar por teléfono
-                const { data: pacSearch } = await supabase
-                    .from('pacientes')
-                    .select('id')
-                    .eq('clinica_id', clinica_id)
-                    .eq('telefono', tel)
-                    .maybeSingle();
-
-                if (pacSearch) {
-                    paciente_id = pacSearch.id;
-                    // Actualizar datos opcionales
-                    await supabase.from('pacientes').update({ nombre_completo: nombre, email: email }).eq('id', paciente_id);
-                } else {
-                    // Crear nuevo
-                    const { data: newPac, error: errPac } = await supabase
-                        .from('pacientes')
-                        .insert({ clinica_id, nombre_completo: nombre, telefono: tel, email })
-                        .select()
-                        .single();
-                    if (errPac) throw errPac;
-                    paciente_id = newPac.id;
-                }
-
-                // --- PASO 2: Obtener duración del servicio ---
-                const servicio = serviciosActuales.find(s => s.id == servicio_id);
-                const duracion = servicio ? servicio.duracion_minutos : 30; // 30 min por defecto fallback
-
-                // --- PASO 3: Upsert Cita ---
-                const citaPayload = {
-                    clinica_id,
-                    doctor_id,
-                    paciente_id,
-                    servicio_id,
-                    fecha,
-                    hora_inicio,
-                    duracion_minutos: duracion,
-                    estado
-                };
-
-                if (cita_id) {
-                    // Actualizar
-                    const { error } = await supabase.from('citas_agenda').update(citaPayload).eq('id', cita_id);
-                    if (error) throw error;
-                } else {
-                    // Insertar
-                    const { error } = await supabase.from('citas_agenda').insert(citaPayload);
-                    if (error) throw error;
-                }
-
-                // Éxito
-                cerrarModal();
-                calendar.refetchEvents();
-                
-            } catch (error) {
-                console.error("Error en operación:", error);
-                alert("Hubo un error al guardar la cita. Revisa la consola.");
-            } finally {
-                btn.innerText = cita_id ? 'Actualizar Cita' : 'Guardar Operación';
-                btn.disabled = false;
+            let { data: pac } = await supabase.from('pacientes').select('id').eq('telefono', tel).maybeSingle();
+            if (!pac) {
+                const { data: nPac } = await supabase.from('pacientes').insert({ clinica_id, nombre_completo: nombre, telefono: tel }).select().single();
+                pac = nPac;
             }
+
+            const payload = {
+                clinica_id,
+                doctor_id,
+                paciente_id: pac.id,
+                servicio_id,
+                fecha: document.getElementById('fechaCita').value,
+                hora_inicio: document.getElementById('horaInicio').value,
+                duracion_minutos: serviciosActuales.find(s => s.id == servicio_id)?.duracion_minutos || 30,
+                estado: document.getElementById('estadoCita').value
+            };
+
+            const citaId = document.getElementById('citaId').value;
+            if (citaId) await supabase.from('citas_agenda').update(payload).eq('id', citaId);
+            else await supabase.from('citas_agenda').insert(payload);
+
+            cerrarModal();
+            calendar.refetchEvents();
+            btn.innerText = "Guardar Operación";
         }
     </script>
 </body>
