@@ -277,26 +277,21 @@
         });
 
         // 4. Funciones de Carga de Datos
-        async function cargarDoctores() {
-            const select = document.getElementById('doctorSelect');
-            const { data, error } = await supabase
-                .from('doctores')
-                .select('id, nombre_profesional')
-                .eq('clinica_id', clinica_id);
+     async function cargarServicios(doctorId) {
+    const select = document.getElementById('servicioSelect');
+    
+    const { data, error } = await supabase
+        .from('servicios')
+        .select('id, nombre, duracion_minutos')
+        .eq('doctor_id', doctorId);
 
-            if (error) {
-                console.error('Error cargando doctores:', error);
-                select.innerHTML = '<option value="">Error de conexión</option>';
-                return;
-            }
-
-            if (data.length > 0) {
-                select.innerHTML = data.map(d => `<option value="${d.id}">⚕️ DR. ${d.nombre_profesional}</option>`).join('');
-                await cargarServicios(data[0].id); // Cargar servicios del primer doctor
-            } else {
-                select.innerHTML = '<option value="">No hay doctores registrados</option>';
-            }
-        }
+    if (data) {
+        serviciosActuales = data;
+        select.innerHTML = data.map(s => `
+            <option value="${s.id}">${s.nombre} (${s.duracion_minutos} min)</option>
+        `).join('');
+    }
+}
 
         async function cargarServicios(doctorId) {
             const select = document.getElementById('servicioSelect');
