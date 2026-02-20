@@ -2,74 +2,491 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.B SYSTEM | RESERVAR ✦</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>K.B SYSTEM | Reservar Cita</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-        .glass-card { background: white; border-radius: 3rem; border: 1px solid rgba(197, 160, 89, 0.1); padding: 2.5rem; width: 100%; max-width: 450px; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.05); }
-        .input-kb { width: 100%; padding: 1rem; border-radius: 1.5rem; border: 1px solid #e2e8f0; font-weight: 600; font-size: 14px; outline: none; }
-        .btn-mando { background: #0f172a; color: white; width: 100%; padding: 1.2rem; border-radius: 1.5rem; font-weight: 900; text-transform: uppercase; }
-        .slot { border: 1px solid #f1f5f9; padding: 0.5rem; text-align: center; border-radius: 0.8rem; font-size: 12px; font-weight: 800; cursor: pointer; }
-        .slot.selected { background: #0f172a; color: white; }
+        :root {
+            --luxe-gold: #c5a059;
+            --luxe-gold-glow: rgba(197, 160, 89, 0.3);
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card-luxe {
+            background: #ffffff;
+            border-radius: 2.5rem;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06);
+            border: 1px solid rgba(197, 160, 89, 0.05);
+        }
+
+        .input-luxe {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            border-radius: 1.25rem;
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .input-luxe:focus {
+            background-color: #ffffff;
+            border-color: var(--luxe-gold);
+            box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
+        }
+
+        .label-luxe {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            margin-left: 0.5rem;
+        }
+
+        .btn-gold {
+            background-color: var(--luxe-gold);
+            color: #ffffff;
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.8rem;
+            width: 100%;
+            box-shadow: 0 8px 25px -5px var(--luxe-gold-glow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-gold:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -5px rgba(197, 160, 89, 0.5);
+            background-color: #b08d4a;
+        }
+        .btn-gold:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slot-btn {
+            padding: 0.8rem 0;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #64748b;
+            font-weight: 800;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .slot-btn.active {
+            background: var(--luxe-gold);
+            border-color: var(--luxe-gold);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+            transform: scale(1.05);
+        }
+
+        .patient-found {
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
     </style>
 </head>
-<body>
-    <div class="glass-card text-center">
-        <h1 class="text-2xl font-black italic uppercase text-[#0f172a] mb-8">K.B <span class="text-[#c5a059]">RESERVA</span></h1>
-        <form id="bookingForm" class="space-y-4 text-left">
-            <input type="text" id="nombre" class="input-kb uppercase" placeholder="NOMBRE COMPLETO" required>
-            <div class="flex gap-2">
-                <select id="lada" class="input-kb w-24"><option value="52">+52</option><option value="1">+1</option></select>
-                <input type="tel" id="telefono" class="input-kb" placeholder="TELÉFONO" required>
-            </div>
-            <input type="email" id="email" class="input-kb" placeholder="CORREO" required>
-            <input type="date" id="fecha" class="input-kb" required>
-            <div id="slots" class="grid grid-cols-3 gap-2 py-4"></div>
-            <button type="submit" class="btn-mando">Confirmar Reserva 🚀</button>
-        </form>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+
+    <!-- PANTALLA DE ERROR (Enlace Inválido) -->
+    <div id="errorState" class="hidden w-full max-w-md card-luxe p-10 text-center">
+        <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 text-red-500 text-3xl">⚠️</div>
+        <h2 class="text-xl font-black uppercase text-slate-800 tracking-tight">Enlace Inválido</h2>
+        <p class="text-sm text-slate-500 mt-2 font-semibold">No se ha detectado el identificador del especialista. Solicite un nuevo enlace.</p>
+    </div>
+
+    <!-- PANTALLA DE ÉXITO -->
+    <div id="successState" class="hidden w-full max-w-md card-luxe p-10 text-center relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-[#c5a059] opacity-10 rounded-bl-[100px] pointer-events-none"></div>
+        <div class="w-20 h-20 bg-emerald-50 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 text-emerald-500 text-4xl shadow-[0_10px_30px_-10px_rgba(16,185,129,0.3)]">
+            ✓
+        </div>
+        <h2 class="text-2xl font-black uppercase tracking-tighter text-slate-800">Cita Solicitada</h2>
+        <p class="text-sm text-slate-500 mt-3 font-semibold leading-relaxed">Hemos recibido su solicitud de cita con éxito. Un miembro de nuestro equipo se pondrá en contacto pronto.</p>
+        <div class="mt-8 pt-6 border-t border-slate-100">
+            <p class="text-[10px] font-black uppercase tracking-widest text-[#c5a059]">K.B SYSTEM ÉLITE</p>
+        </div>
+    </div>
+
+    <!-- FORMULARIO PRINCIPAL -->
+    <div id="mainApp" class="w-full max-w-lg card-luxe relative overflow-hidden">
+        <!-- Decoración Superior -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#c5a059] to-[#ebd29f]"></div>
+        
+        <div class="p-8 md:p-10">
+            <header class="text-center mb-8">
+                <div class="w-12 h-12 bg-slate-900 rounded-[1rem] flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-[#c5a059] font-black text-2xl">✦</span>
+                </div>
+                <h1 class="text-[10px] font-black uppercase tracking-[0.2em] text-[#c5a059] mb-1">Reserva Médica Especializada</h1>
+                <h2 id="doctorName" class="text-2xl font-black tracking-tighter text-slate-800 uppercase">Cargando Especialista...</h2>
+            </header>
+
+            <form id="agendarForm" class="space-y-6">
+                <!-- SECCIÓN 1: IDENTIFICACIÓN -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-black text-slate-800 border-b border-slate-100 pb-2">1. Información de Contacto</h3>
+                    
+                    <div>
+                        <label class="label-luxe">Número de WhatsApp</label>
+                        <div class="flex gap-2">
+                            <select id="lada" class="input-luxe !w-28 cursor-pointer !px-2 text-center text-sm">
+                                <option value="+52">🇲🇽 +52</option>
+                                <option value="+1">🇺🇸 +1</option>
+                            </select>
+                            <input type="tel" id="telefono" placeholder="10 dígitos..." class="input-luxe flex-1" maxlength="10" required>
+                        </div>
+                        <p id="patientHint" class="text-[10px] font-bold text-[#c5a059] mt-2 ml-2 hidden">✨ ¡Bienvenido de nuevo! Datos autocompletados.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-luxe">Nombre Completo</label>
+                            <input type="text" id="nombre" placeholder="Su nombre" class="input-luxe" required>
+                        </div>
+                        <div>
+                            <label class="label-luxe">Correo Electrónico</label>
+                            <input type="email" id="email" placeholder="correo@ejemplo.com" class="input-luxe">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: SERVICIO Y FECHA -->
+                <div class="space-y-4 pt-4">
+                    <h3 class="text-sm font-black text-slate-800 border-b border-slate-100 pb-2">2. Detalle de Operación</h3>
+                    
+                    <div>
+                        <label class="label-luxe">Elegir Servicio</label>
+                        <select id="servicio" class="input-luxe cursor-pointer" required>
+                            <option value="">Cargando servicios...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="label-luxe">Fecha de la Cita</label>
+                        <input type="date" id="fecha" class="input-luxe cursor-pointer" required>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: DISPONIBILIDAD -->
+                <div class="space-y-4 pt-4">
+                    <h3 class="text-sm font-black text-slate-800 border-b border-slate-100 pb-2">3. Disponibilidad</h3>
+                    
+                    <div id="slotsContainer" class="min-h-[60px] flex items-center justify-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 p-4">
+                        <p class="text-xs font-bold text-slate-400 text-center">Seleccione una fecha para ver horarios.</p>
+                    </div>
+                </div>
+
+                <!-- BOTÓN CONFIRMAR -->
+                <div class="pt-6">
+                    <button type="submit" id="btnSubmit" class="btn-gold relative overflow-hidden group">
+                        <span class="relative z-10">Confirmar Reserva de Cita</span>
+                        <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-        const supabase = createClient('https://hymwekomndkxdxsxqhyq.supabase.co', 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_');
+
+        // --- 1. CONFIGURACIÓN SUPABASE ---
+        const SUPABASE_URL = 'https://hymwekomndkxdxsxqhyq.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_5ePDm7jC3nNnMPeM9BuADg_bvoE0kI_';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // --- 2. VARIABLES GLOBALES ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const doctorId = urlParams.get('docId');
         
-        const params = new URLSearchParams(window.location.search);
-        let horaSel = null;
+        let clinicaId = '';
+        let serviciosCache = [];
+        let selectedTime = null;
+        let searchTimeout;
 
-        document.getElementById('fecha').onchange = async (e) => {
-            const container = document.getElementById('slots');
-            container.innerHTML = "CARGANDO...";
-            const horas = ["09:00", "10:00", "11:00", "12:00", "16:00", "17:00"];
-            container.innerHTML = horas.map(h => `<div class="slot" onclick="selHora(this, '${h}')">${h}</div>`).join('');
-        };
+        // --- 3. INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!doctorId) {
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+                return;
+            }
 
-        window.selHora = (el, h) => {
-            document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
-            el.classList.add('selected');
-            horaSel = h;
-        };
+            // Configurar fecha mínima (hoy)
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha').min = hoy;
 
-        document.getElementById('bookingForm').onsubmit = async (e) => {
+            await cargarDoctor();
+            await cargarServicios();
+
+            // Event Listeners
+            document.getElementById('telefono').addEventListener('input', manejarBusquedaPaciente);
+            document.getElementById('lada').addEventListener('change', manejarBusquedaPaciente);
+            document.getElementById('fecha').addEventListener('change', cargarDisponibilidad);
+            document.getElementById('servicio').addEventListener('change', cargarDisponibilidad); // Por si cambia duración
+            document.getElementById('agendarForm').addEventListener('submit', procesarReserva);
+        });
+
+        // --- 4. CARGA DE DATOS BÁSICOS ---
+        async function cargarDoctor() {
+            const { data, error } = await supabase
+                .from('doctores')
+                .select('clinica_id, nombre_profesional')
+                .eq('id', doctorId)
+                .maybeSingle();
+
+            if (error || !data) {
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+                return;
+            }
+
+            clinicaId = data.clinica_id;
+            document.getElementById('doctorName').innerText = `Dr. ${data.nombre_profesional}`;
+        }
+
+        async function cargarServicios() {
+            const { data, error } = await supabase
+                .from('servicios')
+                .select('id, nombre, duracion_minutos')
+                .eq('doctor_id', doctorId);
+
+            if (!error && data.length > 0) {
+                serviciosCache = data;
+                const select = document.getElementById('servicio');
+                select.innerHTML = data.map(s => `<option value="${s.id}">${s.nombre} (${s.duracion_minutos} min)</option>`).join('');
+            }
+        }
+
+        // --- 5. INTELIGENCIA: AUTO-DETECTAR PACIENTE ---
+        function manejarBusquedaPaciente(e) {
+            // Limpiar letras, solo números
+            const input = document.getElementById('telefono');
+            input.value = input.value.replace(/\D/g, '');
+            
+            clearTimeout(searchTimeout);
+            
+            if (input.value.length === 10) {
+                searchTimeout = setTimeout(buscarPacienteEnBD, 400);
+            } else {
+                document.getElementById('patientHint').classList.add('hidden');
+                input.classList.remove('patient-found');
+            }
+        }
+
+        async function buscarPacienteEnBD() {
+            const lada = document.getElementById('lada').value;
+            const numero = document.getElementById('telefono').value;
+            const telefonoCompleto = `${lada} ${numero}`;
+
+            const { data } = await supabase
+                .from('pacientes')
+                .select('nombre_completo, email')
+                .eq('clinica_id', clinicaId)
+                .eq('telefono', telefonoCompleto)
+                .maybeSingle();
+
+            if (data) {
+                document.getElementById('nombre').value = data.nombre_completo;
+                document.getElementById('email').value = data.email || '';
+                
+                // Feedback Visual Élite
+                document.getElementById('patientHint').classList.remove('hidden');
+                document.getElementById('telefono').classList.add('patient-found');
+                setTimeout(() => document.getElementById('telefono').classList.remove('patient-found'), 2000);
+            }
+        }
+
+        // --- 6. MOTOR DE DISPONIBILIDAD MATEMÁTICO ---
+        async function cargarDisponibilidad() {
+            const fecha = document.getElementById('fecha').value;
+            const servicioId = document.getElementById('servicio').value;
+            const container = document.getElementById('slotsContainer');
+            
+            if (!fecha || !servicioId) return;
+
+            // Bloquear estado de selectedTime
+            selectedTime = null;
+            container.innerHTML = '<p class="text-xs font-bold text-[#c5a059] animate-pulse text-center w-full">Analizando radar de disponibilidad...</p>';
+
+            // Determinar duración del servicio actual
+            const servicioAct = serviciosCache.find(s => s.id == servicioId);
+            const duracion = servicioAct ? servicioAct.duracion_minutos : 30;
+
+            // Traer citas de ese día para el doctor
+            const { data: citas } = await supabase
+                .from('citas_agenda')
+                .select('hora_inicio, duracion_minutos')
+                .eq('doctor_id', doctorId)
+                .eq('fecha', fecha)
+                .neq('estado', 'cancelada');
+
+            // Generar Slots (Jornada 09:00 a 19:00 -> 540 a 1140 min)
+            const slots = [];
+            let currentMin = 9 * 60; 
+            const endMin = 19 * 60;
+
+            // Filtro de horario pasado si es HOY
+            const hoyObj = new Date();
+            const esHoy = fecha === hoyObj.toISOString().split('T')[0];
+            const minActual = (hoyObj.getHours() * 60) + hoyObj.getMinutes() + 30; // Margen de 30 min
+
+            while (currentMin + duracion <= endMin) {
+                if (!esHoy || currentMin >= minActual) {
+                    // Verificar colisión (StartA < EndB && EndA > StartB)
+                    const colision = (citas || []).some(c => {
+                        const [h, m] = c.hora_inicio.split(':').map(Number);
+                        const cStart = (h * 60) + m;
+                        const cEnd = cStart + c.duracion_minutos;
+                        const slotEnd = currentMin + duracion;
+
+                        return (currentMin < cEnd) && (slotEnd > cStart);
+                    });
+
+                    if (!colision) {
+                        const hh = Math.floor(currentMin / 60).toString().padStart(2, '0');
+                        const mm = (currentMin % 60).toString().padStart(2, '0');
+                        slots.push(`${hh}:${mm}`);
+                    }
+                }
+                currentMin += 30; // Saltos de 30 min
+            }
+
+            renderizarSlots(slots);
+        }
+
+        function renderizarSlots(slots) {
+            const container = document.getElementById('slotsContainer');
+            if (slots.length === 0) {
+                container.innerHTML = '<p class="text-xs font-bold text-red-400 bg-red-50 p-3 rounded-xl text-center w-full border border-red-100">Sin horarios disponibles para este día.</p>';
+                return;
+            }
+
+            container.classList.remove('bg-slate-50', 'border', 'border-dashed');
+            container.innerHTML = `
+                <div class="grid grid-cols-3 gap-3 w-full">
+                    ${slots.map(s => `
+                        <button type="button" class="slot-btn" onclick="seleccionarHora('${s}', this)">
+                            ${s}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        window.seleccionarHora = function(hora, btnElement) {
+            selectedTime = hora;
+            document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+
+        // --- 7. UPSERT Y CREACIÓN DE CITA ---
+        async function procesarReserva(e) {
             e.preventDefault();
-            const { data: p } = await supabase.from('pacientes').upsert({
-                clinica_id: params.get('clinId'),
-                nombre_completo: document.getElementById('nombre').value.toUpperCase(),
-                telefono: document.getElementById('lada').value + document.getElementById('telefono').value,
-                email: document.getElementById('email').value
-            }).select().single();
 
-            await supabase.from('citas_agenda').insert({
-                clinica_id: params.get('clinId'),
-                doctor_id: params.get('docId'),
-                paciente_id: p.id,
-                fecha: document.getElementById('fecha').value,
-                hora_inicio: horaSel,
-                duracion_minutos: 30
-            });
-            alert("RESERVA EXITOSA");
-        };
+            if (!selectedTime) {
+                alert("✦ Por favor, seleccione un horario disponible de la cuadrícula.");
+                return;
+            }
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.innerHTML = 'Enviando Datos Seguros...';
+
+            try {
+                const lada = document.getElementById('lada').value;
+                const telClean = document.getElementById('telefono').value.replace(/\D/g, '');
+                const telefonoCompleto = `${lada} ${telClean}`;
+                const nombre = document.getElementById('nombre').value.trim();
+                const email = document.getElementById('email').value.trim();
+                
+                const servicioId = document.getElementById('servicio').value;
+                const fecha = document.getElementById('fecha').value;
+                
+                const servicioAct = serviciosCache.find(s => s.id == servicioId);
+                const duracion = servicioAct ? servicioAct.duracion_minutos : 30;
+
+                // 1. UPSERT PACIENTE
+                let pacienteId;
+                const { data: pData } = await supabase
+                    .from('pacientes')
+                    .select('id')
+                    .eq('clinica_id', clinicaId)
+                    .eq('telefono', telefonoCompleto)
+                    .maybeSingle();
+
+                if (pData) {
+                    pacienteId = pData.id;
+                    await supabase.from('pacientes').update({ nombre_completo: nombre, email }).eq('id', pacienteId);
+                } else {
+                    const { data: newP, error: pErr } = await supabase
+                        .from('pacientes')
+                        .insert({ clinica_id: clinicaId, nombre_completo: nombre, telefono: telefonoCompleto, email })
+                        .select().single();
+                    if(pErr) throw pErr;
+                    pacienteId = newP.id;
+                }
+
+                // 2. INSERTAR CITA
+                const { error: cErr } = await supabase
+                    .from('citas_agenda')
+                    .insert({
+                        clinica_id: clinicaId,
+                        doctor_id: doctorId,
+                        paciente_id: pacienteId,
+                        servicio_id: servicioId,
+                        fecha: fecha,
+                        hora_inicio: selectedTime,
+                        duracion_minutos: duracion,
+                        estado: 'pendiente'
+                    });
+
+                if(cErr) throw cErr;
+
+                // 3. ÉXITO (Cambio de Pantalla)
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('successState').classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error en reserva:", error);
+                alert("Ocurrió un error de conexión al procesar la cita. Intente de nuevo.");
+                btn.disabled = false;
+                btn.innerHTML = 'Confirmar Reserva de Cita';
+            }
+        }
     </script>
 </body>
 </html>
